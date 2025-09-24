@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+      "target": "ES2022",
+      "module": "ES2022",
+      "strict": true,
+      "sourceMap": true,
+      "esModuleInterop": true,
+      "strictNullChecks": false,
+      "allowSyntheticDefaultImports": true,
+      "strictPropertyInitialization": false,
+      "moduleResolution": "node",
+      "skipLibCheck": false,
+      "lib": [
+          "DOM",
+          "ES2022",
+          "ES6"
+      ]
+  },
+  "include": [
+      "./src/index.ts"
+  ]
+}
