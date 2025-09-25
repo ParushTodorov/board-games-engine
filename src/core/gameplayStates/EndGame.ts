@@ -1,0 +1,1 @@
+/*This class is abstract and will be implemented separately for each individual game.*/
