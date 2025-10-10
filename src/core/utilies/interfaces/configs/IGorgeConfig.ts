@@ -2,7 +2,7 @@ import { IElementSize } from "../common/IElementSize"
 import { IPosition } from "../common/IPosition"
 
 export interface IGorgeConfig {
-    assetName: string;
+    assetName?: string;
     size: IElementSize;
     count: number;
     globalPositions: {

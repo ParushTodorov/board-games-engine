@@ -1,58 +1,124 @@
-/*This class will display the elements during active gameplay. 
-The class is a base class. If necessary, additional or different 
-implementations will be applied for each game individually.*/
-
 import { IGameBoardConfig } from "../../core/utilies/interfaces/configs/IGameBoardConfig";
 import { IGameViewElementsConfig } from "../../core/utilies/interfaces/configs/IGameViewElementsConfig";
 import { IGorgeConfig } from "../../core/utilies/interfaces/configs/IGorgeConfig";
 import { IElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IElementConfig";
 import { IGorgeElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IGorgeElementConfig";
-import { BaseMainViewElements } from "../../core/utilies/viewElements.ts/BaseMainViewElement";
-import { GameBoard } from "../../core/utilies/viewElements.ts/GameBoard";
-import { GameComponent } from "../../core/utilies/viewElements.ts/GameComponent";
-import { Gorge } from "../../core/utilies/viewElements.ts/Gorge";
+import { GameElementType } from "../utilies/types/GameElementTypes";
+import { BaseView } from "./BaseView";
+import { GameBoard } from "../utilies/viewElements/GameBoard";
+import { GameComponent } from "../utilies/viewElements/GameComponent";
+import { Gorge } from "../utilies/viewElements/Gorge";
+import { Application } from "../../Application";
+import { Background } from "../utilies/viewElements/Background";
 
-export class GameplayView extends BaseMainViewElements {
+export class GameplayView extends BaseView {
 
     private gameplayViewConfig: IGameViewElementsConfig;
-
+    
+    private background: Background;
     private gameBoards: Map<string, GameBoard> = new Map();
     private gorges: Map<string, Gorge> = new Map();
     private gameComponents: Map<string, GameComponent> = new Map();
+
+    private currentBoardName: string;
 
     constructor(gameplayViewConfig: IGameViewElementsConfig) {
         super();
 
         this.gameplayViewConfig = gameplayViewConfig;
+        this.pivot.set(gameplayViewConfig.pivot.x, gameplayViewConfig.pivot.y);
     }
 
     public init() {
+        this.createBackground();
         this.createGameBoard();
         this.createGorges();
         this.createGameComponents();
     }
 
+    public onResize() {
+        const { width, height } = Application.APP.viewSizes;
+        
+        this.x = width / 2;
+        this.y = height / 2;
+
+        const scale = Math.min(width / this.gameplayViewConfig.alwaysOnViewBounds.width, height / this.gameplayViewConfig.alwaysOnViewBounds.height);
+
+        this.scale.set(scale);
+
+        this.getAllElements(this.gorges).forEach(gorge => gorge.onResize());
+    }
+
+    public getSingleElementByNameAndType(name: string, type: GameElementType) {
+        switch (type) {
+            case "background":
+                return this.background;
+            case "board":
+                return this.getElement(name, type, this.gameBoards);
+            case "gameComponent":
+                return this.getElement(name, type, this.gameComponents);
+            case "gorge":
+                return this.getElement(name, type, this.gorges);
+            default:
+                break;
+        }
+    }
+
+    public getAllElementsByType(type: GameElementType) {
+        switch (type) {
+            case "background":
+                return this.background;
+            case "board":
+                return this.getAllElements(this.gameBoards);
+            case "gameComponent":
+                return this.getAllElements(this.gameComponents);
+            case "gorge":
+                return this.getAllElements(this.gorges);
+            default:
+                break;
+        }
+    }
+
+    private createBackground() {
+        const backgroundConfig = this.gameplayViewConfig.background;
+        this.background = new Background(backgroundConfig);
+
+        this.background.x = backgroundConfig.position.x;
+        this.background.y = backgroundConfig.position.y;
+
+        this.addChild(this.background);
+    }
+
     private createGameBoard() {
-        Object.keys(this.gameplayViewConfig.gameBoard).forEach(
+        this.currentBoardName = this.gameplayViewConfig.gameBoard.startBoardName;
+
+        Object.keys(this.gameplayViewConfig.gameBoard.boards).forEach(
             value => {
-                const config: IGameBoardConfig = this.gameplayViewConfig.gameBoard[value];
+                const config: IGameBoardConfig = this.gameplayViewConfig.gameBoard.boards[value];
                 const gameBoard: GameBoard = new GameBoard(config);
                 gameBoard.x = config.position.x;
                 gameBoard.y = config.position.y;
 
-                this.addChild(gameBoard);
                 this.gameBoards.set(config.assetName, gameBoard);
+
+                if (this.currentBoardName === value) {
+                    this.addChild(gameBoard);
+                }
             }
         )
     }
 
     private createGorges() {
+        const currentGameBoard = this.gameBoards.get(this.currentBoardName);
+
         Object.keys(this.gameplayViewConfig.gorge).forEach(
             value => {
                 const config: IGorgeConfig = this.gameplayViewConfig.gorge[value];
                 for (let i = 0; i < config.count; i++) {
                     const gorgeConfig: IGorgeElementConfig = {
-                        type: value,
+                        type: "gorge",
+                        assetName: config.assetName!,
+                        name: value,
                         id: i,
                         size: config.size,
                         gameComponentsPosition: config.gameComponentsPosition,
@@ -60,8 +126,8 @@ export class GameplayView extends BaseMainViewElements {
 
                     const gorge = new Gorge(gorgeConfig);
                     
-                    gorge.x = config.globalPositions[i].x;
-                    gorge.y = config.globalPositions[i].y;
+                    gorge.x = currentGameBoard.x + config.globalPositions[i].x;
+                    gorge.y = currentGameBoard.y + config.globalPositions[i].y;
 
                     this.addChild(gorge);
                     this.gorges.set(gorge.getName(), gorge);
@@ -77,7 +143,9 @@ export class GameplayView extends BaseMainViewElements {
 
                 for (let i = 0; i < config.count; i++) {
                     const gameComponentConfig: IElementConfig = {
-                        type: value,
+                        type: "gameComponent",
+                        name: value,
+                        assetName: config.assetName!,
                         id: i,
                         size: config.size,
                     }
@@ -94,5 +162,18 @@ export class GameplayView extends BaseMainViewElements {
                 }
             }
         )
+    }
+
+    private getElement<T>(name: string, type: GameElementType, map: Map<string, T>) {
+        if (!map.has(name)) {
+            console.warn(`No ${type} with name ${name}!!!`);
+            return undefined;   
+        }
+
+        return map.get(name);
+    }
+
+    private getAllElements<T>(map: Map<string, T>) {
+        return [...map.values()];
     }
 }

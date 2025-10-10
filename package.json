@@ -16,7 +16,7 @@
     "howler": "^2.2.4",
     "html-webpack-plugin": "^5.6.2",
     "pixi-spine": "^3.1.2",
-    "pixi.js": "^6.2.2",
+    "pixi.js": "^8.13.2",
     "resource-loader": "^4.0.0-rc4",
     "ts-loader": "^9.5.1",
     "webpack-dev-server": "^5.1.0"

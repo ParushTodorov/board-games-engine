@@ -1,6 +1,12 @@
+import { Application } from "../Application";
+import { GameEvents } from "./GameEvents";
+import { PlayerManager } from "./playerManager/PlayerManager";
 import { GameStates } from "./utilies/enums/GameStates";
 
-export class Gameplay {
+export class BaseGameplay {
+
+    protected app: Application;
+    protected playerManager: PlayerManager;
 
     private currentGameState: GameStates;
     private lastGameState: GameStates;
@@ -8,6 +14,12 @@ export class Gameplay {
     constructor() {
         this.currentGameState = GameStates.Loading;
         this.lastGameState = GameStates.None;
+    }
+
+    public init() {
+        this.app = Application.APP;
+        this.playerManager = this.app.playerManager;
+        Application.APP.emitter.on(GameEvents.ALL_VIEWS_ARE_CREATED, this.setStartView, this);
     }
 
     public changeGameState(gameState: GameStates) {
@@ -34,6 +46,7 @@ export class Gameplay {
 
     protected setStartView() {
         this.changeGameState(GameStates.Gameplay);
+        Application.APP.mainView.onStartGame();
     }
 
     protected setGameplayView() {

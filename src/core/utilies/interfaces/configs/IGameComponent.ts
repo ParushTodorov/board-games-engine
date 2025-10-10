@@ -5,7 +5,7 @@ export interface IGameComponent {
     assetName: string;
     size: IElementSize;
     count: number;
-    globalPositions: {
+    globalPositions?: {
         [key: number]: IPosition;
     }
 }

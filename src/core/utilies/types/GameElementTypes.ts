@@ -1,0 +1,1 @@
+export type GameElementType = "background" | "board" | "gorge" | "gameComponent";

@@ -14,7 +14,8 @@
           "DOM",
           "ES2022",
           "ES6"
-      ]
+      ],
+      "resolveJsonModule": true
   },
   "include": [
       "./src/index.ts"

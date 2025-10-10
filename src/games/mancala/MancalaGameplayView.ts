@@ -3,10 +3,10 @@ import { IGameViewElementsConfig } from "../../core/utilies/interfaces/configs/I
 import { IGorgeConfig } from "../../core/utilies/interfaces/configs/IGorgeConfig";
 import { IElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IElementConfig";
 import { IGorgeElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IGorgeElementConfig";
-import { BaseMainViewElements } from "../../core/utilies/viewElements.ts/BaseMainViewElement";
-import { GameBoard } from "../../core/utilies/viewElements.ts/GameBoard";
-import { GameComponent } from "../../core/utilies/viewElements.ts/GameComponent";
-import { Gorge } from "../../core/utilies/viewElements.ts/Gorge";
+import { BaseMainViewElements } from "../../core/utilies/viewElements/BaseMainViewElement";
+import { GameBoard } from "../../core/utilies/viewElements/GameBoard";
+import { GameComponent } from "../../core/utilies/viewElements/GameComponent";
+import { Gorge } from "../../core/utilies/viewElements/Gorge";
 
 export class MancalaGameplayView extends BaseMainViewElements {
 
@@ -23,6 +23,7 @@ export class MancalaGameplayView extends BaseMainViewElements {
     }
 
     public init() {
+        super.interactive
         this.createGameBoard();
         this.createGorges();
         this.createGameComponents();
@@ -31,7 +32,7 @@ export class MancalaGameplayView extends BaseMainViewElements {
     private createGameBoard() {
         Object.keys(this.gameplayViewConfig.gameBoard).forEach(
             value => {
-                const config: IGameBoardConfig = this.gameplayViewConfig.gameBoard[value];
+                const config: IGameBoardConfig = this.gameplayViewConfig.gameBoard.boards[value];
                 const gameBoard: GameBoard = new GameBoard(config);
                 gameBoard.x = config.position.x;
                 gameBoard.y = config.position.y;
@@ -48,7 +49,8 @@ export class MancalaGameplayView extends BaseMainViewElements {
                 const config: IGorgeConfig = this.gameplayViewConfig.gorge[value];
                 for (let i = 0; i < config.count; i++) {
                     const gorgeConfig: IGorgeElementConfig = {
-                        type: value,
+                        name: value,
+                        type: "gorge",
                         id: i,
                         size: config.size,
                         gameComponentsPosition: config.gameComponentsPosition,
@@ -73,7 +75,8 @@ export class MancalaGameplayView extends BaseMainViewElements {
 
                 for (let i = 0; i < config.count; i++) {
                     const gameComponentConfig: IElementConfig = {
-                        type: value,
+                        name: value,
+                        type: "gameComponent",
                         id: i,
                         size: config.size,
                     }
