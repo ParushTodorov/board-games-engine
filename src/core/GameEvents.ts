@@ -1,5 +1,6 @@
 export class GameEvents {
     public static LOAD_START_ASSETS = "LOAD_START_ASSETS";
+    public static LOAD_COMMON_ASSETS = "LOAD_COMMON_ASSETS";
     public static ALL_VIEWS_ARE_CREATED = "ALL_VIEWS_ARE_CREATED";
 
     public static START_GAME = "START_GAME";

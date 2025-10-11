@@ -1,0 +1,38 @@
+{
+    "assets": {
+        "bundles": [
+            {
+                "name": "loading_view",
+                "assets": [
+                    {
+                        "alias": "loadingBackground",
+                        "src": "/static/numbers/numberAtlas.json"
+                    }
+                ]
+            },
+            {
+                "name": "common_ui",
+                "assets": [
+                    {
+                        "alias": "statusBar",
+                        "src": "/static/common/StatusBar.png"
+                    }
+                ]
+            }
+        ]
+    },
+    "elements": {
+        "statusBar": {
+            "assetName": "statusBar",
+            "size": {
+                "w": 1400,
+                "h": 1400
+            },
+            "globalPositions": {
+                "x": 0,
+                "y": -150
+            }
+        }
+    }
+
+}

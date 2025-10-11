@@ -1,8 +1,8 @@
 import { IElementConfig } from "../interfaces/elementConfigs.ts/IElementConfig";
 import { GameElementType } from "../types/GameElementTypes";
-import { BaseMainViewElements } from "./BaseMainViewElement";
+import { BaseMainViewElement } from "./BaseMainViewElement";
 
-export class BaseGameElement extends BaseMainViewElements {
+export class BaseGameElement extends BaseMainViewElement {
 
     protected elementConfig: IElementConfig;
 

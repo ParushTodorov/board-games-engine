@@ -6,15 +6,6 @@
     "assets": {
         "bundles": [
             {
-                "name": "loading_view",
-                "assets": [
-                    {
-                        "alias": "loadingBackground",
-                        "src": "/static/numbers/numberAtlas.json"
-                    }
-                ]
-            },
-            {
                 "name": "gameplay_view",
                 "assets": [
                     {
@@ -134,8 +125,8 @@
                 "assetName": "gameComponent",
                 "count": 48,
                 "size": {
-                    "w": 20,
-                    "h": 20
+                    "w": 25,
+                    "h": 25
                 }
             }
         },

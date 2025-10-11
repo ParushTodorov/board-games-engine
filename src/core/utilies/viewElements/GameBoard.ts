@@ -1,10 +1,10 @@
 import * as PIXI from"pixi.js";
 
 import { Application } from "../../../Application";
-import { IGameBoardConfig } from "../interfaces/configs/IGameBoardConfig";
-import { BaseMainViewElements } from "./BaseMainViewElement";
+import { IGameBoardConfig } from "../interfaces/configs/gameConfig/IGameBoardConfig";
+import { BaseMainViewElement } from "./BaseMainViewElement";
 
-export class GameBoard extends BaseMainViewElements {
+export class GameBoard extends BaseMainViewElement {
 
     private gameBoardConfig: IGameBoardConfig;
 

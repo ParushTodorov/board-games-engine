@@ -1,12 +1,12 @@
 import { IElementSize } from "../common/IElementSize";
 import { IPosition } from "../common/IPosition";
 
-export interface IGameComponent {
+export interface IBaseElementConfig {
     assetName: string;
-    size: IElementSize;
-    count: number;
-    globalPositions?: {
+    size?: IElementSize;
+    globalPositions: IPosition;
+    anchor?: IPosition;
+    componentsPosition?: {
         [key: number]: IPosition;
     }
 }
-

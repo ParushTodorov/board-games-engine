@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { IMainViewElements } from "../interfaces/common/IMainViewElements";
 
-export class BaseMainViewElements extends PIXI.Container {
+export class BaseMainViewElement extends PIXI.Container {
 
 
     constructor() {

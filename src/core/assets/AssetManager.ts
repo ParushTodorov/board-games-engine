@@ -7,16 +7,27 @@ export class AssetManager {
 
     public loadingAssets: any;
 
+    public commonAssets: any;
     public gameplayAssets: any;
-    
-    public async loadAssets(manifest: IAssetsBundles) {
+
+    public addManifest(manifest: IAssetsBundles) {
         PIXI.Assets.init({ manifest });
+    }
 
+    public async initialLoad() {
         this.loadingAssets = await PIXI.Assets.loadBundle("loading_view");
-
         Application.APP.emitter.emit(GameEvents.LOAD_START_ASSETS);
+    }
+    
+    public async loadAssets() {
+        await PIXI.Assets.loadBundle('common_ui', (progress) => {
+            console.log(`Loading: ${Math.round(progress * 100)}%`);
+        }).then((value) => {
+            this.commonAssets = value
+            Application.APP.emitter.emit(GameEvents.LOAD_COMMON_ASSETS);
+        })
 
-        PIXI.Assets.loadBundle("gameplay_view", (progress) => {
+        await PIXI.Assets.loadBundle("gameplay_view", (progress) => {
             console.log(`Loading: ${Math.round(progress * 100)}%`);
         }).then((value) => {
             this.gameplayAssets = value

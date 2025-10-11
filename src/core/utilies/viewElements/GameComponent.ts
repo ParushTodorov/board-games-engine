@@ -44,7 +44,11 @@ export class GameComponent extends BaseGameElement implements IMoveable{
     }
 
     private createGameCopmonentView() {
-        const sprite = new PIXI.Sprite(Application.APP.assetManager.gameplayAssets[this.elementConfig.assetName])
+        const sprite = new PIXI.Sprite(Application.APP.assetManager.gameplayAssets[this.elementConfig.assetName]);
+
+        const scale = Math.min(this.elementConfig.size.w / sprite.width, this.elementConfig.size.h / sprite.height);
+        sprite.scale.set(scale);
+
         this.addChild(sprite);
     }
 }

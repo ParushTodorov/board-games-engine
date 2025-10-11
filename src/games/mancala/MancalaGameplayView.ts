@@ -1,14 +1,14 @@
-import { IGameBoardConfig } from "../../core/utilies/interfaces/configs/IGameBoardConfig";
-import { IGameViewElementsConfig } from "../../core/utilies/interfaces/configs/IGameViewElementsConfig";
-import { IGorgeConfig } from "../../core/utilies/interfaces/configs/IGorgeConfig";
+import { IGameBoardConfig } from "../../core/utilies/interfaces/configs/gameConfig/IGameBoardConfig";
+import { IGameViewElementsConfig } from "../../core/utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
+import { IGorgeConfig } from "../../core/utilies/interfaces/configs/gameConfig/IGorgeConfig";
 import { IElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IElementConfig";
 import { IGorgeElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IGorgeElementConfig";
-import { BaseMainViewElements } from "../../core/utilies/viewElements/BaseMainViewElement";
+import { BaseMainViewElement } from "../../core/utilies/viewElements/BaseMainViewElement";
 import { GameBoard } from "../../core/utilies/viewElements/GameBoard";
 import { GameComponent } from "../../core/utilies/viewElements/GameComponent";
 import { Gorge } from "../../core/utilies/viewElements/Gorge";
 
-export class MancalaGameplayView extends BaseMainViewElements {
+export class MancalaGameplayView extends BaseMainViewElement {
 
     private gameplayViewConfig: IGameViewElementsConfig;
 

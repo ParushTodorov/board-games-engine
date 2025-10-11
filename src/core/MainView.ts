@@ -1,28 +1,38 @@
 import * as PIXI from "pixi.js";
-import { IGameViewElementsConfig } from "./utilies/interfaces/configs/IGameViewElementsConfig";
+import gsap from "gsap";
+
+import { IGameViewElementsConfig } from "./utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
 import { Application } from "../Application";
 import { GameEvents } from "./GameEvents";
 import { GameplayView } from "./views/GameplayView";
 import { LoadingView } from "./views/LoadingView";
-import gsap from "gsap";
 import { BaseView } from "./views/BaseView";
+import { StatusBarView } from "./views/StatusBarView";
+import { IBaseElementConfig } from "./utilies/interfaces/configs/IBaseElementConfig";
 
 export class MainView extends BaseView {
 
     private currentView: BaseView;
 
+    private statusBar: StatusBarView;
+
     private views: Map<string, BaseView> = new Map();
 
     private viewConfig: IGameViewElementsConfig;
+    private commonConfig: {[key: string]: IBaseElementConfig};
 
-    constructor(viewConfig: IGameViewElementsConfig) {
+    constructor(viewConfig: IGameViewElementsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
         super();   
         
         this.viewConfig = viewConfig;
+        this.commonConfig = commonConfig;
+
+        this.sortableChildren = true;
     }
 
     public init() {
         Application.APP.emitter.on(GameEvents.LOAD_START_ASSETS, this.onLoadGame, this);
+        Application.APP.emitter.on(GameEvents.LOAD_COMMON_ASSETS, this.createCommonUI, this);
         Application.APP.emitter.on(GameEvents.START_GAME, this.createAllViews, this);
     }
 
@@ -43,6 +53,14 @@ export class MainView extends BaseView {
         return this.currentView;
     }
 
+    public onResize(): void {
+        this.statusBar.x = 0;
+        this.statusBar.y = Application.APP.viewSizes.height;
+        this.statusBar.onResize();
+        
+        this.currentView.onResize();
+    }
+
     protected onLoadGame() {
         const loadingView = new LoadingView();
         this.currentView = loadingView;
@@ -52,10 +70,6 @@ export class MainView extends BaseView {
 
     public onStartGame() {
         this.transitionTo("gameplayView");
-    }
-
-    public onResize(): void {
-        this.currentView.onResize();
     }
 
     protected onGamePause() {
@@ -68,6 +82,16 @@ export class MainView extends BaseView {
 
     protected onGameEnd() {
         
+    }
+
+    protected createCommonUI() {
+        if (this.commonConfig["statusBar"]) {
+            this.statusBar = new StatusBarView(this.commonConfig["statusBar"]);
+            this.statusBar.x = 0;
+            this.statusBar.y = Application.APP.viewSizes.height;
+            this.addChild(this.statusBar);
+            this.statusBar.zIndex = 1000;
+        }
     }
 
     protected createAllViews() {

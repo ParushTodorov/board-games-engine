@@ -1,0 +1,7 @@
+import { IAssetsBundles } from "../IAssetsBundles";
+import { IBaseElementConfig } from "../IBaseElementConfig";
+
+export interface ICommonConfig {
+    assets: IAssetsBundles;
+    elements: {[key: string]: IBaseElementConfig};
+}

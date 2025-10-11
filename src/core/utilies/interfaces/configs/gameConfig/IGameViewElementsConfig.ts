@@ -1,8 +1,8 @@
 import { IGorgeConfig } from "./IGorgeConfig";
 import { IGameComponent } from "./IGameComponent";
 import { IGameBoardConfig } from "./IGameBoardConfig";
-import { IDimension } from "../common/IDimension";
-import { IPosition } from "../common/IPosition";
+import { IDimension } from "../../common/IDimension";
+import { IPosition } from "../../common/IPosition";
 
 export interface IGameViewElementsConfig {
     background: IGameBoardConfig;

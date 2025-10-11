@@ -1,4 +1,4 @@
-import { IAssetsBundles } from "./IAssetsBundles";
+import { IAssetsBundles } from "../IAssetsBundles";
 import { IGameViewElementsConfig } from "./IGameViewElementsConfig";
 
 export interface IGameConfig {

@@ -1,5 +1,5 @@
-import { IElementSize } from "../common/IElementSize"
-import { IPosition } from "../common/IPosition"
+import { IElementSize } from "../../common/IElementSize"
+import { IPosition } from "../../common/IPosition"
 
 export interface IGorgeConfig {
     assetName?: string;

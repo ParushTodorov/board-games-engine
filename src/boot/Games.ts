@@ -1,4 +1,4 @@
 export const Games: {[key: string]: string} = {
-    "mc": "mancala",
+    "ma": "mancala",
     "nmm": "nineMenMorris"
 }

@@ -1,9 +1,13 @@
 import * as PIXI from 'pixi.js'
 import { MainView } from './core/MainView';
 import { BaseGameplay } from './core/Gameplay';
-import { IGameConfig } from './core/utilies/interfaces/configs/IGameConfig';
+import { IGameConfig } from './core/utilies/interfaces/configs/gameConfig/IGameConfig';
 import { AssetManager } from './core/assets/AssetManager';
 import { PlayerManager } from './core/playerManager/PlayerManager';
+
+import commonConfig from './core/CommonConfig.json';
+
+type ICommonConfig = typeof commonConfig;
 
 export class Application {
     public static APP: Application;
@@ -16,11 +20,15 @@ export class Application {
     public assetManager: AssetManager;
 
     public viewSizes: {width: number, height: number} = {width: 0, height: 0};
+
     protected gameConfig: IGameConfig;
+    protected commonConfig: ICommonConfig;
 
     constructor(gameplay: BaseGameplay, gameConfig: IGameConfig) {
         this.gameConfig = gameConfig;
-        this.mainView = new MainView(this.gameConfig.gameViewElements);
+        this.commonConfig = commonConfig;
+        
+        this.mainView = new MainView(this.gameConfig.gameViewElements, this.commonConfig.elements);
         this.gameplay = gameplay;
         this.playerManager = new PlayerManager();
     }
@@ -61,7 +69,16 @@ export class Application {
 
     private async loadStaticFiles() {
         this.assetManager = new AssetManager();
-        await this.assetManager.loadAssets(this.gameConfig.assets)
+
+        const bundles = [...this.commonConfig.assets.bundles, ... this.gameConfig.assets.bundles];
+        const manifest = {
+            "bundles": bundles
+        };
+
+        this.assetManager.addManifest(manifest);
+
+        await this.assetManager.initialLoad();
+        this.assetManager.loadAssets();
     }
 
     private resizeObserver() {
