@@ -109,12 +109,14 @@ export class Gameplay extends BaseGameplay {
             await this.moveBallToNewGoroge(gameComponent, newGorge);
             
             if (Number.isInteger(id) && i === gameComponents.length - 1 && newGorge.getAllCurrentGameComponents().length === 1) {
-                this.tryToCaptureOppositeBalls(newGorge, id as number);
+                await this.tryToCaptureOppositeBalls(newGorge, id as number);
             }
         }
         
         if (this.capturedBalls === 48) {
             console.log("WINNER WINNER!!!")
+            this.app.emitter.emit(GameEvents.NEW_MESSAGE, "WiNNER WINNER");
+            return;
         };
 
         await this.finishTheMove(currentIndex, currentGorgeBall);
@@ -125,14 +127,19 @@ export class Gameplay extends BaseGameplay {
             await gameComponent.move(finalDestination);
             newGorge.addNewGameComponent(gameComponent);
 
+            // Capture no change of score
             if (newGorge.getName().includes('side')) {
-                this.capturedBalls++
+                this.capturedBalls++;
+                const playerGorge = newGorge.getName().includes('0') ? 2 : 1
+                this.playerManager.setScore(playerGorge, 1)
             }
 
             return finalDestination;
     }
 
     private async finishTheMove(finalPosition: number, balls: number): Promise<void> {
+        this.app.emitter.emit(GameEvents.NEW_MESSAGE, this.playerManager.getScoreMessage());       
+        
         if (this.IsStillCurrentPlayerTurn(finalPosition)) {
             return;
         }

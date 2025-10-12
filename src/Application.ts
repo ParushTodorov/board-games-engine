@@ -19,12 +19,14 @@ export class Application {
     public playerManager: PlayerManager;
     public assetManager: AssetManager;
 
-    public viewSizes: {width: number, height: number} = {width: 0, height: 0};
+    public viewSizes: {width: number, height: number, isLandscape: () => boolean} = {width: 0, height: 0, isLandscape: () => this.viewSizes.width > this.viewSizes.height};
 
     protected gameConfig: IGameConfig;
     protected commonConfig: ICommonConfig;
 
     constructor(gameplay: BaseGameplay, gameConfig: IGameConfig) {
+        Application.APP = this;
+        
         this.gameConfig = gameConfig;
         this.commonConfig = commonConfig;
         
@@ -34,8 +36,6 @@ export class Application {
     }
     
     public async init() {
-        Application.APP = this;
-
         await this.createPixiApplication();
 
         this.mainView.init();

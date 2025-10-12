@@ -19,7 +19,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
         this.interactive = true;
         this.on(
             'pointerdown', () => {
-                Application.APP.emitter.emit(GameEvents.TOUCH_TO_MOVE, {startElement: this.getGorgeOwner(), element: this.getName()})
+                this.app.emitter.emit(GameEvents.TOUCH_TO_MOVE, {startElement: this.getGorgeOwner(), element: this.getName()})
             }
         )
     }
@@ -44,7 +44,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
     }
 
     private createGameCopmonentView() {
-        const sprite = new PIXI.Sprite(Application.APP.assetManager.gameplayAssets[this.elementConfig.assetName]);
+        const sprite = new PIXI.Sprite(this.app.assetManager.gameplayAssets[this.elementConfig.assetName]);
 
         const scale = Math.min(this.elementConfig.size.w / sprite.width, this.elementConfig.size.h / sprite.height);
         sprite.scale.set(scale);

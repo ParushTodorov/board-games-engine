@@ -1,3 +1,4 @@
+
 import { IGameBoardConfig } from "../utilies/interfaces/configs/gameConfig/IGameBoardConfig";
 import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
 import { IGorgeConfig } from "../utilies/interfaces/configs/gameConfig/IGorgeConfig";
@@ -34,10 +35,11 @@ export class GameplayView extends BaseView {
         this.createGameBoard();
         this.createGorges();
         this.createGameComponents();
+        this.onResize();
     }
 
     public onResize() {
-        const { width, height } = Application.APP.viewSizes;
+        const { width, height } = this.app.viewSizes;
         
         this.x = width / 2;
         this.y = height / 2;
@@ -46,7 +48,13 @@ export class GameplayView extends BaseView {
 
         this.scale.set(scale);
 
-        this.getAllElements(this.gorges).forEach(gorge => gorge.onResize());
+        const backgroundScaleX = (width / scale) / (this.background.width/ this.background.scale.x);
+        const backgroundScaleY =  (height / scale) / (this.background.height / this.background.scale.y);
+        const backgroundScale = Math.max(backgroundScaleX, backgroundScaleY, 1 );
+        this.background.scale.set(backgroundScale);
+
+        this.background.x = this.gameplayViewConfig.pivot.x - this.background.width / 2;
+        this.background.y = this.gameplayViewConfig.pivot.y - this.background.height / 2;
     }
 
     public getSingleElementByNameAndType(name: string, type: GameElementType) {
@@ -83,9 +91,7 @@ export class GameplayView extends BaseView {
         const backgroundConfig = this.gameplayViewConfig.background;
         this.background = new Background(backgroundConfig);
 
-        this.background.x = backgroundConfig.position.x;
-        this.background.y = backgroundConfig.position.y;
-
+        // this.background.anchor = {x: 0.5, y: 0.5};
         this.addChild(this.background);
     }
 

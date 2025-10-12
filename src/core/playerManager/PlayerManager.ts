@@ -57,4 +57,28 @@ export class PlayerManager {
             }
         })
     }
+
+    public getScoreMessage() {
+        const players = Object.values(this.players);
+
+        let result: string = "";
+
+        if (players.length === 2) {
+            players.forEach((player, index) => {
+                result += this.singlePlayerScore(player);
+
+                if (index === 0) {
+                    result += "     ";
+                }
+            })
+        } else {
+            result += this.singlePlayerScore(this.playerOnTurn);
+        }
+
+        return result;
+    }
+
+    private singlePlayerScore(player: Player) {
+        return `Player ${player.id}: ${player.points}`;
+    }
 }

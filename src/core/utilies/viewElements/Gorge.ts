@@ -21,32 +21,6 @@ export class Gorge extends BaseGameElement {
         this.createGorgeView();
 
         this.interactive = true;
-        // this.on(
-        //     'mouseover', () => {
-        //         this.getAllCurrentGameComponents().forEach( (component, index) => {
-        //             component.x += 5;
-        //             component.y += 5;
-        //         })        
-        //     }
-        // );
-
-        // this.on(
-        //     'mouseout', () => {
-        //         this.getAllCurrentGameComponents().forEach( (component, index) => {
-        //             component.x -= 5;
-        //             component.y -= 5;
-        //         })        
-        //     }
-        // )
-    }
-
-    public onResize() {
-        this.getAllCurrentGameComponents().forEach( (component, index) => {
-            const { x, y } = this.getElementGameComponentPosition(index);
-
-            component.x = x;
-            component.y = y;
-        })
     }
 
     public addNewGameComponent(gameComponent: GameComponent) {
@@ -112,7 +86,7 @@ export class Gorge extends BaseGameElement {
             return;
         }
 
-        const sprite = new PIXI.Sprite(Application.APP.assetManager.gameplayAssets[this.elementConfig.assetName])
+        const sprite = new PIXI.Sprite(this.app.assetManager.gameplayAssets[this.elementConfig.assetName])
         this.addChild(sprite);
     }
 
@@ -122,8 +96,7 @@ export class Gorge extends BaseGameElement {
         gfx.rect(0, 0, this.elementConfig.size.w, this.elementConfig.size.h)
         gfx.fill({
             color: 0xffffff, 
-            alpha: 0.5
-            // alpha: Number.MIN_VALUE
+            alpha: Number.MIN_VALUE
         })
 
         this.addChild(gfx);

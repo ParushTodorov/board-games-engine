@@ -31,9 +31,9 @@ export class MainView extends BaseView {
     }
 
     public init() {
-        Application.APP.emitter.on(GameEvents.LOAD_START_ASSETS, this.onLoadGame, this);
-        Application.APP.emitter.on(GameEvents.LOAD_COMMON_ASSETS, this.createCommonUI, this);
-        Application.APP.emitter.on(GameEvents.START_GAME, this.createAllViews, this);
+        this.app.emitter.on(GameEvents.LOAD_START_ASSETS, this.onLoadGame, this);
+        this.app.emitter.on(GameEvents.LOAD_COMMON_ASSETS, this.createCommonUI, this);
+        this.app.emitter.on(GameEvents.START_GAME, this.createAllViews, this);
     }
 
     public getViewByName(name: string) {
@@ -55,7 +55,7 @@ export class MainView extends BaseView {
 
     public onResize(): void {
         this.statusBar.x = 0;
-        this.statusBar.y = Application.APP.viewSizes.height;
+        this.statusBar.y = this.app.viewSizes.height;
         this.statusBar.onResize();
         
         this.currentView.onResize();
@@ -88,7 +88,7 @@ export class MainView extends BaseView {
         if (this.commonConfig["statusBar"]) {
             this.statusBar = new StatusBarView(this.commonConfig["statusBar"]);
             this.statusBar.x = 0;
-            this.statusBar.y = Application.APP.viewSizes.height;
+            this.statusBar.y = this.app.viewSizes.height;
             this.addChild(this.statusBar);
             this.statusBar.zIndex = 1000;
         }
@@ -105,7 +105,7 @@ export class MainView extends BaseView {
             this.addChild(gameplayView);
         }
 
-        Application.APP.emitter.emit(GameEvents.ALL_VIEWS_ARE_CREATED);
+        this.app.emitter.emit(GameEvents.ALL_VIEWS_ARE_CREATED);
     }
 
     protected async transitionTo(nextViewName: string) {

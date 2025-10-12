@@ -9,4 +9,8 @@ export class GameEvents {
     public static GAME_RESUMED = "GAME_RESUMED";
 
     public static TOUCH_TO_MOVE = "TOUCH_TO_MOVE";
+
+    // Messages
+    public static NEW_MESSAGE = "NEW_MESSAGE";
+    public static CLEAR_MESSAGE = "CLEAR_MESSAGE";
 }
