@@ -5,10 +5,7 @@ export class Boot {
     public params: {[key: string]: string} = {};
 
     constructor() {
-        console.log(window.location.search)
         this.setParams();
-        console.log(this.params);
-
         this.getGame();
     }
 

@@ -1,3 +1,4 @@
+import { IDimension } from "../common/IDimension";
 import { IElementSize } from "../common/IElementSize";
 import { IPosition } from "../common/IPosition";
 

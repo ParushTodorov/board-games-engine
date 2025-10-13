@@ -42,7 +42,7 @@ export class Application {
     public async init() {
         await this.createPixiApplication();
 
-        this.mainView.init(this.gameConfig.gameViewElements, this.commonConfig.elements);
+        this.mainView.init(this.gameConfig.views, this.commonConfig.elements);
         this.pixiApp.stage.addChild(this.mainView);
 
         this.gameplay.init();

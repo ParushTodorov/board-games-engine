@@ -8,11 +8,8 @@ import { MessageManager } from "../managers/MessageManager";
 export class StatusBarView extends BaseMainViewElement {
 
     private statusBarConfig: IBaseElementConfig;
-
     private messageBoard: MessageBoard;
-
     private messageManager: MessageManager;
-
     private statusBarSprite: PIXI.Sprite;
 
     constructor(statusBarConfig: IBaseElementConfig) {

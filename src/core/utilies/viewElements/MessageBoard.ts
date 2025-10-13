@@ -41,6 +41,10 @@ export class MessageBoard extends BaseMainViewElement {
         this.resize();
     }
 
+    public getText(): string {
+        return this.text.text;
+    }
+
     public onResize(maxSize: IElementSize) {
         this.BASE_SIZE.w = maxSize.w;
         this.BASE_SIZE.h = maxSize.h;

@@ -8,8 +8,8 @@ export class BaseGameplay {
     protected app: Application;
     protected playerManager: PlayerManager;
 
-    private currentGameState: GameStates;
-    private lastGameState: GameStates;
+    protected currentGameState: GameStates;
+    protected lastGameState: GameStates;
 
     constructor() {
         this.currentGameState = GameStates.Loading;
@@ -19,61 +19,31 @@ export class BaseGameplay {
     public init() {
         this.app = Application.APP;
         this.playerManager = this.app.playerManager;
-        Application.APP.emitter.on(GameEvents.ALL_VIEWS_ARE_CREATED, this.setStartView, this);
+        Application.APP.emitter.on(GameEvents.START_NEW_GAME, this.onStartNewGame, this);
     }
 
     public changeGameState(gameState: GameStates) {
         this.lastGameState = this.currentGameState;
         this.currentGameState = gameState;
-
-        switch (gameState) {
-            case GameStates.Start:
-                this.setStartView();
-                break;
-            case GameStates.Gameplay:
-                this.setGameplayView();
-                break;
-            case GameStates.End:
-                this.setEndView();
-                break;
-            case GameStates.Pause:
-                this.setPauseView();
-                break;
-            default:
-                break;
-        }
-    }
-
-    protected setStartView() {
-        this.changeGameState(GameStates.Gameplay);
-        Application.APP.mainView.onStartGame();
-    }
-
-    protected setGameplayView() {
-
-    }
-
-    protected setEndView() {
-
-    }
-
-    protected setPauseView() {
-
     }
 
     protected onStartNewGame() {
         this.changeGameState(GameStates.Start);
+        this.app.emitter.emit(GameEvents.START_GAME);
     }
 
     protected onEndGame() {
         this.changeGameState(GameStates.End);
+        this.app.emitter.emit(GameEvents.GAME_END);
     }
 
     protected onPauseGame() {
         this.changeGameState(GameStates.Pause);
+        this.app.emitter.emit(GameEvents.GAME_PAUSED);
     }
 
     protected onResumeGame() {
         this.changeGameState(this.lastGameState);
+        this.app.emitter.emit(GameEvents.GAME_RESUMED);
     }
 }

@@ -54,6 +54,10 @@ export class Gorge extends BaseGameElement {
         return Array.from(this.currentGameComponents.values());
     }
 
+    public getElementsCount(): number {
+        return this.currentGameComponents.size;
+    }
+
     public getNextElementPosition(): PIXI.Point {
         if (this.gameComponentsPosition) {
             const nextElementId: number = this.getAllCurrentGameComponentsNames().length;

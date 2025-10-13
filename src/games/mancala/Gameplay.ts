@@ -8,10 +8,12 @@ import { GameComponent } from "../../core/utilies/viewElements/GameComponent";
 import { Gorge } from "../../core/utilies/viewElements/Gorge";
 import { GameplayView } from "../../core/views/GameplayView";
 import { GorgeType } from "./utilits/GorgeType";
+import { GameStates } from "../../core/utilies/enums/GameStates";
 
 export class Gameplay extends BaseGameplay {
     private INIT_GAMECOMPONENTS_PER_GORGE: number = 4;
-    
+    private MAX_BALLS: number = 48; 
+
     private gameView: GameplayView;
     private gorgeSequence = [0, 1, 2, 3, 4, 5, "right", 6, 7, 8, 9, 10, 11, "left"];
 
@@ -35,7 +37,7 @@ export class Gameplay extends BaseGameplay {
         this.app.playerManager.addPlayer(new Player());
     }
 
-    protected setStartView(): void {
+    protected onStartNewGame(): void {
         if (!this.gameView) {
             this.gameView = this.app.mainView.getViewByName("gameplayView") as GameplayView;
         }
@@ -53,9 +55,9 @@ export class Gameplay extends BaseGameplay {
             return;
         }
 
-        gorges.forEach((gorge) => {
-            gorge.removeAllGameComponents();
+        gorges.forEach((gorge) => gorge.removeAllGameComponents());
 
+        gorges.forEach((gorge) => {
             if (gorge.getName().includes("sideGorge")) return;
 
             for (let i=0; i < this.INIT_GAMECOMPONENTS_PER_GORGE; i++) {
@@ -70,14 +72,14 @@ export class Gameplay extends BaseGameplay {
         })
 
         this.capturedBalls = 0;
-
         this.playerManager.startGame();
+        this.showCurrentPlayer();
 
-        super.setStartView();
+        super.onStartNewGame();
     }
 
     private async onTouchToMove(e: {startElement: string, element: string}): Promise<void> {
-        if (e.startElement.includes("side")) return;
+        if (this.currentGameState != GameStates.Gameplay || e.startElement.includes("side")) return;
 
         const startElement: Gorge = this.gameView.getSingleElementByNameAndType(e.startElement, "gorge") as Gorge;
         const startId = Number.parseInt(startElement.getName().split("-")[1]);
@@ -113,13 +115,20 @@ export class Gameplay extends BaseGameplay {
             }
         }
         
-        if (this.capturedBalls === 48) {
-            console.log("WINNER WINNER!!!")
-            this.app.emitter.emit(GameEvents.NEW_MESSAGE, "WiNNER WINNER");
-            return;
+        if (this.capturedBalls > this.MAX_BALLS / 2) {
+            const playerTwoBalls = (this.gameView.getSingleElementByNameAndType('sideGorge-0', "gorge") as Gorge).getElementsCount();
+            if (playerTwoBalls > 24) {
+                this.endGame(2);
+            }
+            
+            const playerOneBalls = (this.gameView.getSingleElementByNameAndType('sideGorge-1', "gorge") as Gorge).getElementsCount();
+            if (playerOneBalls > 24) {
+                this.endGame(1);
+            }   
         };
 
         await this.finishTheMove(currentIndex, currentGorgeBall);
+        this.showCurrentPlayer();
     }
 
     private async moveBallToNewGoroge(gameComponent: GameComponent, newGorge: Gorge) : Promise<Point> {
@@ -130,16 +139,15 @@ export class Gameplay extends BaseGameplay {
             // Capture no change of score
             if (newGorge.getName().includes('side')) {
                 this.capturedBalls++;
-                const playerGorge = newGorge.getName().includes('0') ? 2 : 1
-                this.playerManager.setScore(playerGorge, 1)
+                const playerGorge = newGorge.getName().includes('0') ? 2 : 1;
+                this.playerManager.setScore(playerGorge, 1);
+                this.app.emitter.emit(GameEvents.SCORE_CHANGE, this.playerManager.getScoreMessage());
             }
 
             return finalDestination;
     }
 
     private async finishTheMove(finalPosition: number, balls: number): Promise<void> {
-        this.app.emitter.emit(GameEvents.NEW_MESSAGE, this.playerManager.getScoreMessage());       
-        
         if (this.IsStillCurrentPlayerTurn(finalPosition)) {
             return;
         }
@@ -175,6 +183,10 @@ export class Gameplay extends BaseGameplay {
         this.playerManager.turnEnd();
     }
 
+    private showCurrentPlayer() {
+        this.app.emitter.emit(GameEvents.PLAYER_CHANGE, this.playerManager.playerOnTurnId());
+    }
+
     private IsStillCurrentPlayerTurn(finalPosition: number): boolean {
         const finalGorgeId = this.gorgeSequence[finalPosition];
 
@@ -201,13 +213,15 @@ export class Gameplay extends BaseGameplay {
 
             totalCount += (this.gameView.getSingleElementByNameAndType(this.createGorgeName("smallGorge", id), "gorge") as Gorge).getAllCurrentGameComponents().length;
         })
-
-        console.log("current: ", this.playerManager.playerOnTurnId(), " next: ", this.playerManager.nextPlaterId(), " gorges: ", this.gorgeOwner[playerId], " total: ", totalCount)
-
         return totalCount === 0;
     }
 
     private createGorgeName(gorgeType: GorgeType, id: string | number): string {
         return `${gorgeType}-${id}`;
+    }
+
+    private endGame(winner: number) {
+        this.app.emitter.emit(GameEvents.NEW_MESSAGE, `Player ${winner} is the winner!`);
+        this.app.emitter.emit(GameEvents.GAME_END);
     }
 }

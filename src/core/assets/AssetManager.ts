@@ -31,7 +31,7 @@ export class AssetManager {
             console.log(`Loading: ${Math.round(progress * 100)}%`);
         }).then((value) => {
             this.gameplayAssets = value
-            Application.APP.emitter.emit(GameEvents.START_GAME);
+            Application.APP.emitter.emit(GameEvents.LOAD_GAMEPLAY_ASSETS);
         });
     }
 

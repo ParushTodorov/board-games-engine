@@ -1,5 +1,5 @@
 import { IAssetsBundles } from "../IAssetsBundles";
-import { IGameViewElementsConfig } from "./IGameViewElementsConfig";
+import { IViewsConfig } from "./IViewsConfig";
 
 export interface IGameConfig {
     gameInfo: {
@@ -7,5 +7,5 @@ export interface IGameConfig {
         gameToken: string;
     },
     assets: IAssetsBundles;
-    gameViewElements: IGameViewElementsConfig;
+    views: IViewsConfig;
 }

@@ -102,8 +102,8 @@ export class GameplayView extends BaseView {
             value => {
                 const config: IGameBoardConfig = this.gameplayViewConfig.gameBoard.boards[value];
                 const gameBoard: GameBoard = new GameBoard(config);
-                gameBoard.x = config.position.x;
-                gameBoard.y = config.position.y;
+                gameBoard.x = config.globalPositions.x;
+                gameBoard.y = config.globalPositions.y;
 
                 this.gameBoards.set(config.assetName, gameBoard);
 

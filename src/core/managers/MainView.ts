@@ -5,10 +5,12 @@ import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfi
 import { Application } from "../../Application";
 import { GameEvents } from "../GameEvents";
 import { GameplayView } from "../views/GameplayView";
+import { EndView } from "../views/EndView";
 import { LoadingView } from "../views/LoadingView";
 import { BaseView } from "../views/BaseView";
 import { StatusBarView } from "../views/StatusBarView";
 import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementConfig";
+import { IViewsConfig } from "../utilies/interfaces/configs/gameConfig/IViewsConfig";
 
 export class MainView extends BaseView {
 
@@ -18,14 +20,14 @@ export class MainView extends BaseView {
 
     private views: Map<string, BaseView> = new Map();
 
-    private viewConfig: IGameViewElementsConfig;
+    private viewConfig: IViewsConfig;
     private commonConfig: {[key: string]: IBaseElementConfig};
 
     constructor() {
         super();   
     }
 
-    public init(viewConfig: IGameViewElementsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
+    public init(viewConfig: IViewsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
         this.viewConfig = viewConfig;
         this.commonConfig = commonConfig;
 
@@ -33,7 +35,9 @@ export class MainView extends BaseView {
 
         this.app.emitter.on(GameEvents.LOAD_START_ASSETS, this.onLoadGame, this);
         this.app.emitter.on(GameEvents.LOAD_COMMON_ASSETS, this.createCommonUI, this);
-        this.app.emitter.on(GameEvents.START_GAME, this.createAllViews, this);
+        this.app.emitter.on(GameEvents.LOAD_GAMEPLAY_ASSETS, this.createAllViews, this);
+        this.app.emitter.on(GameEvents.START_GAME, this.onStartGame, this);
+        this.app.emitter.on(GameEvents.GAME_END, this.onGameEnd, this);
     }
 
     public getViewByName(name: string) {
@@ -81,8 +85,8 @@ export class MainView extends BaseView {
 
     }
 
-    protected onGameEnd() {
-        
+    protected async onGameEnd() {
+        await this.transitionTo("endView");
     }
 
     protected createCommonUI() {
@@ -98,23 +102,32 @@ export class MainView extends BaseView {
 
     protected createAllViews() {
         if (!this.views.has("gameplayView")) {
-            const gameplayView = new GameplayView(this.viewConfig);
+            const gameplayView = new GameplayView(this.viewConfig.gameViewElements);
             gameplayView.init();
             gameplayView.visible = false;
             gameplayView.alpha = 0;
-            this.currentView = gameplayView;
             this.views.set("gameplayView", gameplayView);
             this.addChild(gameplayView);
         }
 
-        this.app.emitter.emit(GameEvents.ALL_VIEWS_ARE_CREATED);
+        if (!this.views.has("endView")) {
+            const endView = new EndView(this.viewConfig.endViewElements);
+            // endView.init();
+            endView.visible = false;
+            endView.alpha = 0;
+            endView.interactive = true;
+            endView.on('pointerup', () => {
+                this.app.emitter.emit(GameEvents.START_NEW_GAME);        
+            })
+            this.views.set("endView", endView);
+            this.addChild(endView);
+        }
+
+        this.app.emitter.emit(GameEvents.START_NEW_GAME);
     }
 
     protected async transitionTo(nextViewName: string) {
-        await gsap.to(this.currentView, {
-            alpha: 0,
-            onComplete: () => this.currentView.visible = false
-        })
+        await this.hide(this.currentView);
 
         this.currentView = this.getViewByName(nextViewName);
         await this.show(this.currentView);
@@ -127,6 +140,13 @@ export class MainView extends BaseView {
 
         await gsap.to(view, {
             alpha: 1
+        })
+    }
+
+    protected async hide(currentView: BaseView) {
+        await gsap.to(currentView, {
+            alpha: 0,
+            onComplete: () => currentView.visible = false
         })
     }
 }

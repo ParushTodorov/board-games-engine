@@ -4,6 +4,6 @@ import { IPosition } from "../../common/IPosition";
 export interface IGameBoardConfig {
     assetName: string;
     size: IElementSize;
-    position: IPosition;
+    globalPositions: IPosition;
     anchor?: IPosition;
 }

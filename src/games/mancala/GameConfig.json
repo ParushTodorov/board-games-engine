@@ -27,119 +27,141 @@
                     {
                         "alias": "gameComponent",
                         "src": "/static/mancala/GameComponent.png"
+                    },
+                    {
+                        "alias": "endViewBackground",
+                        "src": "/static/mancala/EndViewBackground.png"
                     }
                 ]
             }
         ]        
     },
-    "gameViewElements": {
-        "background": {
-            "assetName": "gameplayBackground",
-            "size": {
-                "w": 1400,
-                "h": 1400
+    "views": {
+        "gameViewElements": {
+            "background": {
+                "assetName": "gameplayBackground",
+                "size": {
+                    "w": 1400,
+                    "h": 1400
+                },
+                "globalPositions": {
+                    "x": 0,
+                    "y": -150
+                }
             },
-            "position": {
-                "x": 0,
-                "y": -150
-            }
-        },
-        "gameBoard": {
-            "startBoardName": "mainGameBoard",
-            "boards": {
-                "mainGameBoard": { 
-                    "assetName": "mainGameBoard",
-                    "size": {
-                        "w": 1200,
-                        "h": 400
-                    },
-                    "position": {
-                        "x": 100,
-                        "y": 200
+            "gameBoard": {
+                "startBoardName": "mainGameBoard",
+                "boards": {
+                    "mainGameBoard": { 
+                        "assetName": "mainGameBoard",
+                        "size": {
+                            "w": 1200,
+                            "h": 400
+                        },
+                        "globalPositions": {
+                            "x": 100,
+                            "y": 200
+                        }
                     }
                 }
-            }
-        },
-        "gorge": {
-            "smallGorge": {
-                "assetName": "smallGorge",
-                "size": {
-                    "w": 100,
-                    "h": 100
+            },
+            "gorge": {
+                "smallGorge": {
+                    "assetName": "smallGorge",
+                    "size": {
+                        "w": 100,
+                        "h": 100
+                    },
+                    "count": 12,
+                    "globalPositions": {
+                        "0": {"x": 237.5, "y": 250},
+                        "1": {"x": 362.5, "y": 250},
+                        "2": {"x": 487.5, "y": 250},
+                        "3": {"x": 612.5, "y": 250},
+                        "4": {"x": 737.5, "y": 250},
+                        "5": {"x": 862.5, "y": 250},
+                        "6": {"x": 862.5, "y": 50},
+                        "7": {"x": 737.5, "y": 50},
+                        "8": {"x": 612.5, "y": 50},
+                        "9": {"x": 487.5, "y": 50},
+                        "10": {"x": 362.5, "y": 50},
+                        "11": {"x": 237.5, "y": 50}
+                    },
+                    "gameComponentsPosition": {
+                        "0": {"x": -0.25, "y": -0.25},
+                        "1": {"x": -0.25, "y": 0.25},
+                        "2": {"x": 0.25, "y": -0.25},
+                        "3": {"x": 0.25, "y": 0.25},
+                        "4": {"x": 0, "y": 0},
+                        "5": {"x": 0, "y": -0.375},
+                        "6": {"x": -0.375, "y": 0},
+                        "7": {"x": 0, "y": 0.375},
+                        "8": {"x": 0.375, "y": 0},
+                        "9": {"x": -0.25, "y": 0},
+                        "10": {"x": 0, "y": -0.25},
+                        "11": {"x": 0.25, "y": 0},
+                        "12": {"x": 0, "y": 0.25},
+                        "13": {"x": -0.125, "y": -0.25},
+                        "14": {"x": -0.125, "y": 0.25},
+                        "15": {"x": 0.125, "y": -0.25},
+                        "16": {"x": 0.125, "y": 0.25},
+                        "17": {"x": -0.125, "y": -0.125},
+                        "18": {"x": -0.125, "y": 0.125},
+                        "19": {"x": 0.125, "y": -0.125},
+                        "20": {"x": 0.125, "y": 0.125},
+                        "21": {"x": 0, "y": 0}
+                    }
                 },
-                "count": 12,
-                "globalPositions": {
-                    "0": {"x": 237.5, "y": 250},
-                    "1": {"x": 362.5, "y": 250},
-                    "2": {"x": 487.5, "y": 250},
-                    "3": {"x": 612.5, "y": 250},
-                    "4": {"x": 737.5, "y": 250},
-                    "5": {"x": 862.5, "y": 250},
-                    "6": {"x": 862.5, "y": 50},
-                    "7": {"x": 737.5, "y": 50},
-                    "8": {"x": 612.5, "y": 50},
-                    "9": {"x": 487.5, "y": 50},
-                    "10": {"x": 362.5, "y": 50},
-                    "11": {"x": 237.5, "y": 50}
-                },
-                "gameComponentsPosition": {
-                    "0": {"x": -0.25, "y": -0.25},
-                    "1": {"x": -0.25, "y": 0.25},
-                    "2": {"x": 0.25, "y": -0.25},
-                    "3": {"x": 0.25, "y": 0.25},
-                    "4": {"x": 0, "y": 0},
-                    "5": {"x": 0, "y": -0.375},
-                    "6": {"x": -0.375, "y": 0},
-                    "7": {"x": 0, "y": 0.375},
-                    "8": {"x": 0.375, "y": 0},
-                    "9": {"x": -0.25, "y": 0},
-                    "10": {"x": 0, "y": -0.25},
-                    "11": {"x": 0.25, "y": 0},
-                    "12": {"x": 0, "y": 0.25},
-                    "13": {"x": -0.125, "y": -0.25},
-                    "14": {"x": -0.125, "y": 0.25},
-                    "15": {"x": 0.125, "y": -0.25},
-                    "16": {"x": 0.125, "y": 0.25},
-                    "17": {"x": -0.125, "y": -0.125},
-                    "18": {"x": -0.125, "y": 0.125},
-                    "19": {"x": 0.125, "y": -0.125},
-                    "20": {"x": 0.125, "y": 0.125},
-                    "21": {"x": 0, "y": 0}
+                "sideGorge": {
+                    "assetName": "sideGorge",
+                    "size": {
+                        "w": 100,
+                        "h": 350
+                    },
+                    "count": 2,
+                    "globalPositions": {
+                        "0": {"x": 100, "y": 25},
+                        "1": {"x": 1000, "y": 25}
+                    }
                 }
             },
-            "sideGorge": {
-                "assetName": "sideGorge",
-                "size": {
-                    "w": 100,
-                    "h": 350
-                },
-                "count": 2,
-                "globalPositions": {
-                    "0": {"x": 100, "y": 25},
-                    "1": {"x": 1000, "y": 25}
-                }
-            }
-        },
-        "gameComponents": {
             "gameComponents": {
-                "assetName": "gameComponent",
-                "count": 48,
-                "size": {
-                    "w": 25,
-                    "h": 25
+                "gameComponents": {
+                    "assetName": "gameComponent",
+                    "count": 48,
+                    "size": {
+                        "w": 25,
+                        "h": 25
+                    }
                 }
+            },
+            "alwaysOnViewBounds": {
+                "x": 50,
+                "y": 150,
+                "width": 1300,
+                "height": 500  
+            },
+            "pivot": {
+                "x": 700,
+                "y": 425
             }
         },
-        "alwaysOnViewBounds": {
-            "x": 50,
-            "y": 150,
-            "width": 1300,
-            "height": 500  
-        },
-        "pivot": {
-            "x": 700,
-            "y": 400
+        "endViewElements": {
+            "elements": {
+                "background": {
+                    "assetName": "endViewBackground"
+                }
+            },
+            "pivot": {
+                "x": 512,
+                "y": 493
+            },
+            "alwaysOnViewBounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1024,
+                "height": 985  
+            }
         }
-
     }
 }
