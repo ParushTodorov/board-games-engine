@@ -9,12 +9,13 @@ import { Gorge } from "../../core/utilies/viewElements/Gorge";
 import { GameplayView } from "../../core/views/GameplayView";
 import { GorgeType } from "./utilits/GorgeType";
 import { GameStates } from "../../core/utilies/enums/GameStates";
+import { GameplayElementsManager } from "../../core/managers/GameplayElementsManager";
 
 export class Gameplay extends BaseGameplay {
     private INIT_GAMECOMPONENTS_PER_GORGE: number = 4;
     private MAX_BALLS: number = 48; 
 
-    private gameView: GameplayView;
+    private gameplayElementsManager: GameplayElementsManager;
     private gorgeSequence = [0, 1, 2, 3, 4, 5, "right", 6, 7, 8, 9, 10, 11, "left"];
 
     private gorgeOwner: { [key: number]: number[]} = {
@@ -38,12 +39,12 @@ export class Gameplay extends BaseGameplay {
     }
 
     protected onStartNewGame(): void {
-        if (!this.gameView) {
-            this.gameView = this.app.mainView.getViewByName("gameplayView") as GameplayView;
+        if (!this.gameplayElementsManager) {
+            this.gameplayElementsManager = this.app.gameplayManager;
         }
 
-        const gorges: Gorge[] = this.gameView.getAllElementsByType("gorge") as Gorge[];
-        const gameComponents: GameComponent[] = this.gameView.getAllElementsByType("gameComponent") as GameComponent[];
+        const gorges: Gorge[] = this.gameplayElementsManager.getAllElementsByType("gorge") as Gorge[];
+        const gameComponents: GameComponent[] = this.gameplayElementsManager.getAllElementsByType("gameComponent") as GameComponent[];
 
         if (gameComponents.length != 48) {
             console.warn("There must be 48 game components for this games");
@@ -81,7 +82,7 @@ export class Gameplay extends BaseGameplay {
     private async onTouchToMove(e: {startElement: string, element: string}): Promise<void> {
         if (this.currentGameState != GameStates.Gameplay || e.startElement.includes("side")) return;
 
-        const startElement: Gorge = this.gameView.getSingleElementByNameAndType(e.startElement, "gorge") as Gorge;
+        const startElement: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(e.startElement, "gorge") as Gorge;
         const startId = Number.parseInt(startElement.getName().split("-")[1]);
         const playerOnTurnId = this.playerManager.playerOnTurnId();
 
@@ -107,7 +108,7 @@ export class Gameplay extends BaseGameplay {
                 gorgeName = this.createGorgeName('sideGorge', id === "left" ? 0 : 1);
             }
 
-            const newGorge: Gorge = this.gameView.getSingleElementByNameAndType(gorgeName, "gorge") as Gorge;
+            const newGorge: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(gorgeName, "gorge") as Gorge;
             await this.moveBallToNewGoroge(gameComponent, newGorge);
             
             if (Number.isInteger(id) && i === gameComponents.length - 1 && newGorge.getAllCurrentGameComponents().length === 1) {
@@ -116,12 +117,12 @@ export class Gameplay extends BaseGameplay {
         }
         
         if (this.capturedBalls > this.MAX_BALLS / 2) {
-            const playerTwoBalls = (this.gameView.getSingleElementByNameAndType('sideGorge-0', "gorge") as Gorge).getElementsCount();
+            const playerTwoBalls = (this.gameplayElementsManager.getSingleElementByNameAndType('sideGorge-0', "gorge") as Gorge).getElementsCount();
             if (playerTwoBalls > 24) {
                 this.endGame(2);
             }
             
-            const playerOneBalls = (this.gameView.getSingleElementByNameAndType('sideGorge-1', "gorge") as Gorge).getElementsCount();
+            const playerOneBalls = (this.gameplayElementsManager.getSingleElementByNameAndType('sideGorge-1', "gorge") as Gorge).getElementsCount();
             if (playerOneBalls > 24) {
                 this.endGame(1);
             }   
@@ -161,14 +162,14 @@ export class Gameplay extends BaseGameplay {
         if (!this.gorgeOwner[playerOnTurnId].includes(endGorgeNumber))  return;
                 
         const correspondingGorgeNumber = 11 - endGorgeNumber;
-        const correspondingGorge = this.gameView.getSingleElementByNameAndType(this.createGorgeName("smallGorge", correspondingGorgeNumber), "gorge") as Gorge;
+        const correspondingGorge = this.gameplayElementsManager.getSingleElementByNameAndType(this.createGorgeName("smallGorge", correspondingGorgeNumber), "gorge") as Gorge;
         const correspondGameComponents = correspondingGorge.removeAllGameComponents();
 
         if (correspondGameComponents.length === 0) return;
 
         const winnerGorgeID = playerOnTurnId === 1 ? 1 : 0 ;
         const winnerGorgeName = this.createGorgeName("sideGorge", winnerGorgeID);
-        const winnerGorge: Gorge = this.gameView.getSingleElementByNameAndType(winnerGorgeName, "gorge") as Gorge;
+        const winnerGorge: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(winnerGorgeName, "gorge") as Gorge;
 
         endGorge.removeAllGameComponents().forEach(gameComponent => {
             this.moveBallToNewGoroge(gameComponent, winnerGorge);            
@@ -211,7 +212,7 @@ export class Gameplay extends BaseGameplay {
                 return;
             }
 
-            totalCount += (this.gameView.getSingleElementByNameAndType(this.createGorgeName("smallGorge", id), "gorge") as Gorge).getAllCurrentGameComponents().length;
+            totalCount += (this.gameplayElementsManager.getSingleElementByNameAndType(this.createGorgeName("smallGorge", id), "gorge") as Gorge).getAllCurrentGameComponents().length;
         })
         return totalCount === 0;
     }

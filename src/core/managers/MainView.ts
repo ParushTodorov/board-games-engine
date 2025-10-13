@@ -12,14 +12,11 @@ import { StatusBarView } from "../views/StatusBarView";
 import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementConfig";
 import { IViewsConfig } from "../utilies/interfaces/configs/gameConfig/IViewsConfig";
 
-export class MainView extends BaseView {
-
+export class MainView extends PIXI.Container {
+    private app: Application;
     private currentView: BaseView;
-
     private statusBar: StatusBarView;
-
     private views: Map<string, BaseView> = new Map();
-
     private viewConfig: IViewsConfig;
     private commonConfig: {[key: string]: IBaseElementConfig};
 
@@ -28,6 +25,8 @@ export class MainView extends BaseView {
     }
 
     public init(viewConfig: IViewsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
+        this.app = Application.APP;
+        
         this.viewConfig = viewConfig;
         this.commonConfig = commonConfig;
 

@@ -57,36 +57,6 @@ export class GameplayView extends BaseView {
         this.background.y = this.gameplayViewConfig.pivot.y - this.background.height / 2;
     }
 
-    public getSingleElementByNameAndType(name: string, type: GameElementType) {
-        switch (type) {
-            case "background":
-                return this.background;
-            case "board":
-                return this.getElement(name, type, this.gameBoards);
-            case "gameComponent":
-                return this.getElement(name, type, this.gameComponents);
-            case "gorge":
-                return this.getElement(name, type, this.gorges);
-            default:
-                break;
-        }
-    }
-
-    public getAllElementsByType(type: GameElementType) {
-        switch (type) {
-            case "background":
-                return this.background;
-            case "board":
-                return this.getAllElements(this.gameBoards);
-            case "gameComponent":
-                return this.getAllElements(this.gameComponents);
-            case "gorge":
-                return this.getAllElements(this.gorges);
-            default:
-                break;
-        }
-    }
-
     private createBackground() {
         const backgroundConfig = this.gameplayViewConfig.background;
         this.background = new Background(backgroundConfig);
@@ -105,7 +75,7 @@ export class GameplayView extends BaseView {
                 gameBoard.x = config.globalPositions.x;
                 gameBoard.y = config.globalPositions.y;
 
-                this.gameBoards.set(config.assetName, gameBoard);
+                this.app.gameplayManager.setElement('board', config.assetName, gameBoard);
 
                 if (this.currentBoardName === value) {
                     this.addChild(gameBoard);
@@ -115,7 +85,7 @@ export class GameplayView extends BaseView {
     }
 
     private createGorges() {
-        const currentGameBoard = this.gameBoards.get(this.currentBoardName);
+        const currentGameBoard = this.app.gameplayManager.getSingleElementByNameAndType(this.currentBoardName, 'board');
 
         Object.keys(this.gameplayViewConfig.gorge).forEach(
             value => {
@@ -136,7 +106,7 @@ export class GameplayView extends BaseView {
                     gorge.y = currentGameBoard.y + config.globalPositions[i].y;
 
                     this.addChild(gorge);
-                    this.gorges.set(gorge.getName(), gorge);
+                    this.app.gameplayManager.setElement('gorge', gorge.getName(), gorge);
                 }
             }
         )
@@ -164,22 +134,9 @@ export class GameplayView extends BaseView {
                     }
 
                     this.addChild(gameComponent);
-                    this.gameComponents.set(gameComponent.getName(), gameComponent);
+                    this.app.gameplayManager.setElement('gameComponent', gameComponent.getName(), gameComponent);
                 }
             }
         )
-    }
-
-    private getElement<T>(name: string, type: GameElementType, map: Map<string, T>) {
-        if (!map.has(name)) {
-            console.warn(`No ${type} with name ${name}!!!`);
-            return undefined;   
-        }
-
-        return map.get(name);
-    }
-
-    private getAllElements<T>(map: Map<string, T>) {
-        return [...map.values()];
     }
 }

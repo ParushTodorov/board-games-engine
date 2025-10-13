@@ -7,6 +7,7 @@ import { PlayerManager } from './core/playerManager/PlayerManager';
 
 import commonConfig from './core/CommonConfig.json';
 import { IManagerHub } from './core/utilies/interfaces/configs/IManagerHub';
+import { GameplayElementsManager } from './core/managers/GameplayElementsManager';
 
 type ICommonConfig = typeof commonConfig;
 
@@ -22,6 +23,7 @@ export class Application {
     public gameplay: BaseGameplay;
     public playerManager: PlayerManager;
     public assetManager: AssetManager;
+    public gameplayManager: GameplayElementsManager;
 
     public viewSizes: {width: number, height: number, isLandscape: () => boolean} = {width: 0, height: 0, isLandscape: () => this.viewSizes.width > this.viewSizes.height};
 
@@ -34,9 +36,10 @@ export class Application {
         this.gameConfig = gameConfig;
         this.commonConfig = commonConfig;
         
-        this.mainView = new MainView();
+        this.mainView = managerHub.mainView;
         this.gameplay = managerHub.gameplay;
-        this.playerManager = new PlayerManager();
+        this.playerManager = managerHub.playerManager;
+        this.gameplayManager = managerHub.gameplayElementsManager
     }
     
     public async init() {

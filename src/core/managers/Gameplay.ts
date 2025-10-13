@@ -30,6 +30,7 @@ export class BaseGameplay {
     protected onStartNewGame() {
         this.changeGameState(GameStates.Start);
         this.app.emitter.emit(GameEvents.START_GAME);
+        this.changeGameState(GameStates.Gameplay);
     }
 
     protected onEndGame() {
