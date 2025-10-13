@@ -1,7 +1,7 @@
-import { Application } from "../Application";
-import { GameEvents } from "./GameEvents";
-import { PlayerManager } from "./playerManager/PlayerManager";
-import { GameStates } from "./utilies/enums/GameStates";
+import { Application } from "../../Application";
+import { GameEvents } from "./../GameEvents";
+import { PlayerManager } from "./../playerManager/PlayerManager";
+import { GameStates } from "./../utilies/enums/GameStates";
 
 export class BaseGameplay {
 

@@ -1,7 +1,7 @@
 import { Point } from "pixi.js";
 import { Application } from "../../Application";
 import { GameEvents } from "../../core/GameEvents";
-import { BaseGameplay } from "../../core/Gameplay";
+import { BaseGameplay } from "../../core/managers/Gameplay";
 import { Player } from "../../core/playerManager/Player";
 import { PlayerManager } from "../../core/playerManager/PlayerManager";
 import { GameComponent } from "../../core/utilies/viewElements/GameComponent";

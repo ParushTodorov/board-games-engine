@@ -3,7 +3,7 @@ import { Application } from "../../Application";
 import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementConfig";
 import { BaseMainViewElement } from "../utilies/viewElements/BaseMainViewElement";
 import { MessageBoard } from "../utilies/viewElements/MessageBoard";
-import { MessageManager } from "../MessageManager";
+import { MessageManager } from "../managers/MessageManager";
 
 export class StatusBarView extends BaseMainViewElement {
 
@@ -29,7 +29,8 @@ export class StatusBarView extends BaseMainViewElement {
         this.messageBoard = new MessageBoard();
         this.addChild(this.messageBoard);
 
-        this.messageManager = new MessageManager(this.messageBoard);
+        this.messageManager = new MessageManager();
+        this.messageManager.init(this.messageBoard);
 
         this.onResize();
     }

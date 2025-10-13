@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 import gsap from "gsap";
 import { IPosition } from "../interfaces/common/IPosition";
-import { IElementConfig } from "../interfaces/elementConfigs.ts/IElementConfig";
-import { IMoveable } from "../interfaces/elementConfigs.ts/IMoveable";
+import { IElementConfig } from "../interfaces/elementConfigs/IElementConfig";
+import { IMoveable } from "../interfaces/elementConfigs/IMoveable";
 import { BaseGameElement } from "./BaseGameElement";
 import { Application } from "../../../Application";
 import { GameEvents } from "../../GameEvents";

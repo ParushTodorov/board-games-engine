@@ -21,6 +21,13 @@ export class MessageBoard extends BaseMainViewElement {
         this.text.style.fontFamily = "Impact";
         this.text.style.fontSize = 35;
         this.text.anchor.set(0.5);
+        this.text.style.dropShadow = {
+            alpha: 1,
+            angle: 40,
+            blur: 1,
+            color: 0x000000,
+            distance: 1
+        };
 
         this.text.text = this.demo_message;
         this.resize();
@@ -42,7 +49,7 @@ export class MessageBoard extends BaseMainViewElement {
     }
 
     private resize() {
-        const scale = Math.min(this.BASE_SIZE.w * 0.9 / (this.text.width / this.text.scale.x), this.BASE_SIZE.h * 0.9 / (this.text.height, this.text.scale.y));
+        const scale = Math.min(this.BASE_SIZE.w * 0.9 / (this.text.width / this.text.scale.x), this.BASE_SIZE.h * 0.9 / (this.text.height, this.text.scale.y), 1);
 
         this.text.scale.set(scale);
     }

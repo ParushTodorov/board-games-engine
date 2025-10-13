@@ -1,6 +1,6 @@
 import { Application } from "../Application";
 import { Games } from "./Games";
-
+import { IManagerHub } from "../core/utilies/interfaces/configs/IManagerHub";
 export class Boot {
     public params: {[key: string]: string} = {};
 
@@ -25,12 +25,13 @@ export class Boot {
     private async getGame() {
         const gameName = Games[this.params['game']];
 
-        const { Gameplay } = await import(`../games/${gameName}/Gameplay.ts`)
-
         const gameConfig = await import(`../games/${gameName}/GameConfig.json`);
         type IGameConfig = typeof gameConfig;
 
-        const app = new Application(new Gameplay(), gameConfig);
+        const { ManagerHub } = await import(`../games/${gameName}/ManagerHub.ts`)
+        const managerHub: IManagerHub = new ManagerHub();
+
+        const app = new Application(managerHub, gameConfig);
         await app.init();
     }
 }

@@ -1,11 +1,12 @@
 import * as PIXI from 'pixi.js'
-import { MainView } from './core/MainView';
-import { BaseGameplay } from './core/Gameplay';
+import { MainView } from './core/managers/MainView';
+import { BaseGameplay } from './core/managers/Gameplay';
 import { IGameConfig } from './core/utilies/interfaces/configs/gameConfig/IGameConfig';
 import { AssetManager } from './core/assets/AssetManager';
 import { PlayerManager } from './core/playerManager/PlayerManager';
 
 import commonConfig from './core/CommonConfig.json';
+import { IManagerHub } from './core/utilies/interfaces/configs/IManagerHub';
 
 type ICommonConfig = typeof commonConfig;
 
@@ -14,6 +15,9 @@ export class Application {
 
     public pixiApp!: PIXI.Application;
     public emitter: PIXI.EventEmitter;
+
+    public managerHub: IManagerHub;
+
     public mainView: MainView;
     public gameplay: BaseGameplay;
     public playerManager: PlayerManager;
@@ -24,21 +28,21 @@ export class Application {
     protected gameConfig: IGameConfig;
     protected commonConfig: ICommonConfig;
 
-    constructor(gameplay: BaseGameplay, gameConfig: IGameConfig) {
+    constructor(managerHub: IManagerHub, gameConfig: IGameConfig) {
         Application.APP = this;
         
         this.gameConfig = gameConfig;
         this.commonConfig = commonConfig;
         
-        this.mainView = new MainView(this.gameConfig.gameViewElements, this.commonConfig.elements);
-        this.gameplay = gameplay;
+        this.mainView = new MainView();
+        this.gameplay = managerHub.gameplay;
         this.playerManager = new PlayerManager();
     }
     
     public async init() {
         await this.createPixiApplication();
 
-        this.mainView.init();
+        this.mainView.init(this.gameConfig.gameViewElements, this.commonConfig.elements);
         this.pixiApp.stage.addChild(this.mainView);
 
         this.gameplay.init();

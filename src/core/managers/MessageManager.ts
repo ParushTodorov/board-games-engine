@@ -1,14 +1,17 @@
-import { Application } from "../Application";
-import { GameEvents } from "./GameEvents";
-import { MessageBoard } from "./utilies/viewElements/MessageBoard";
+import { Application } from "../../Application";
+import { GameEvents } from "../GameEvents";
+import { MessageBoard } from "../utilies/viewElements/MessageBoard";
 
 export class MessageManager {
 
     public messageBoard: MessageBoard;
     public app: Application;
 
-    constructor(messageBoard: MessageBoard) {
-        this.messageBoard = messageBoard;
+    constructor() {
+    }
+
+    public init(messageBoard: MessageBoard) {
+        this.messageBoard = messageBoard;   
         this.app = Application.APP;
 
         this.app.emitter.on(GameEvents.NEW_MESSAGE, this.onNewMessage, this);

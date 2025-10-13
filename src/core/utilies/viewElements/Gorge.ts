@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import { IPosition } from "../interfaces/common/IPosition";
-import { IGorgeElementConfig } from "../interfaces/elementConfigs.ts/IGorgeElementConfig";
+import { IGorgeElementConfig } from "../interfaces/elementConfigs/IGorgeElementConfig";
 import { BaseGameElement } from "./BaseGameElement";
 import { GameComponent } from "./GameComponent";
 import { Application } from "../../../Application";

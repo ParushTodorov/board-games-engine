@@ -1,14 +1,14 @@
 import * as PIXI from "pixi.js";
 import gsap from "gsap";
 
-import { IGameViewElementsConfig } from "./utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
-import { Application } from "../Application";
-import { GameEvents } from "./GameEvents";
-import { GameplayView } from "./views/GameplayView";
-import { LoadingView } from "./views/LoadingView";
-import { BaseView } from "./views/BaseView";
-import { StatusBarView } from "./views/StatusBarView";
-import { IBaseElementConfig } from "./utilies/interfaces/configs/IBaseElementConfig";
+import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
+import { Application } from "../../Application";
+import { GameEvents } from "../GameEvents";
+import { GameplayView } from "../views/GameplayView";
+import { LoadingView } from "../views/LoadingView";
+import { BaseView } from "../views/BaseView";
+import { StatusBarView } from "../views/StatusBarView";
+import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementConfig";
 
 export class MainView extends BaseView {
 
@@ -21,16 +21,16 @@ export class MainView extends BaseView {
     private viewConfig: IGameViewElementsConfig;
     private commonConfig: {[key: string]: IBaseElementConfig};
 
-    constructor(viewConfig: IGameViewElementsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
+    constructor() {
         super();   
-        
+    }
+
+    public init(viewConfig: IGameViewElementsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
         this.viewConfig = viewConfig;
         this.commonConfig = commonConfig;
 
         this.sortableChildren = true;
-    }
 
-    public init() {
         this.app.emitter.on(GameEvents.LOAD_START_ASSETS, this.onLoadGame, this);
         this.app.emitter.on(GameEvents.LOAD_COMMON_ASSETS, this.createCommonUI, this);
         this.app.emitter.on(GameEvents.START_GAME, this.createAllViews, this);
@@ -68,8 +68,9 @@ export class MainView extends BaseView {
         this.addChild(loadingView);
     }
 
-    public onStartGame() {
-        this.transitionTo("gameplayView");
+    public async onStartGame() {
+        await this.transitionTo("gameplayView");
+        await this.show(this.statusBar);
     }
 
     protected onGamePause() {
@@ -89,6 +90,7 @@ export class MainView extends BaseView {
             this.statusBar = new StatusBarView(this.commonConfig["statusBar"]);
             this.statusBar.x = 0;
             this.statusBar.y = this.app.viewSizes.height;
+            this.statusBar.visible = false;
             this.addChild(this.statusBar);
             this.statusBar.zIndex = 1000;
         }
@@ -115,10 +117,15 @@ export class MainView extends BaseView {
         })
 
         this.currentView = this.getViewByName(nextViewName);
-        this.currentView.onResize();
-        this.currentView.visible = true;
+        await this.show(this.currentView);
+    }
 
-        await gsap.to(this.currentView, {
+    protected async show(view: BaseView) {
+        view.onResize();
+        view.alpha = 0;
+        view.visible = true;
+
+        await gsap.to(view, {
             alpha: 1
         })
     }

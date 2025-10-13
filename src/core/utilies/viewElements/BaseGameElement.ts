@@ -1,4 +1,4 @@
-import { IElementConfig } from "../interfaces/elementConfigs.ts/IElementConfig";
+import { IElementConfig } from "../interfaces/elementConfigs/IElementConfig";
 import { GameElementType } from "../types/GameElementTypes";
 import { BaseMainViewElement } from "./BaseMainViewElement";
 

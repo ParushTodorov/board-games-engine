@@ -2,8 +2,8 @@
 import { IGameBoardConfig } from "../utilies/interfaces/configs/gameConfig/IGameBoardConfig";
 import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
 import { IGorgeConfig } from "../utilies/interfaces/configs/gameConfig/IGorgeConfig";
-import { IElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IElementConfig";
-import { IGorgeElementConfig } from "../../core/utilies/interfaces/elementConfigs.ts/IGorgeElementConfig";
+import { IElementConfig } from "../utilies/interfaces/elementConfigs/IElementConfig";
+import { IGorgeElementConfig } from "../utilies/interfaces/elementConfigs/IGorgeElementConfig";
 import { GameElementType } from "../utilies/types/GameElementTypes";
 import { BaseView } from "./BaseView";
 import { GameBoard } from "../utilies/viewElements/GameBoard";
