@@ -139,11 +139,22 @@
                     }
                 }
             },
+            "gameLogo": {
+                "assetName": "gameLogo",
+                "size": {
+                    "w": 450,
+                    "h": 100
+                },
+                "globalPositions": {
+                    "x": 700,
+                    "y": 85
+                }
+            },
             "alwaysOnViewBounds": {
                 "x": 90,
-                "y": 50,
+                "y": 0,
                 "width": 1220,
-                "height": 600  
+                "height": 650  
             },
             "pivot": {
                 "x": 700,

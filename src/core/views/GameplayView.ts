@@ -9,7 +9,7 @@ import { BaseView } from "./BaseView";
 import { GameBoard } from "../utilies/viewElements/GameBoard";
 import { GameComponent } from "../utilies/viewElements/GameComponent";
 import { Gorge } from "../utilies/viewElements/Gorge";
-import { Application } from "../../Application";
+import { GameLogo } from "../utilies/viewElements/GameLogo";
 import { Background } from "../utilies/viewElements/Background";
 
 export class GameplayView extends BaseView {
@@ -17,6 +17,7 @@ export class GameplayView extends BaseView {
     private gameplayViewConfig: IGameViewElementsConfig;
     
     private background: Background;
+    private gameLogo: GameLogo;
     private gameBoards: Map<string, GameBoard> = new Map();
     private gorges: Map<string, Gorge> = new Map();
     private gameComponents: Map<string, GameComponent> = new Map();
@@ -32,6 +33,7 @@ export class GameplayView extends BaseView {
 
     public init() {
         this.createBackground();
+        this.createGameLogo();
         this.createGameBoard();
         this.createGorges();
         this.createGameComponents();
@@ -61,10 +63,21 @@ export class GameplayView extends BaseView {
         const backgroundConfig = this.gameplayViewConfig.background;
         this.background = new Background(backgroundConfig);
 
-        // this.background.anchor = {x: 0.5, y: 0.5};
         this.addChild(this.background);
     }
 
+    private createGameLogo() {
+        const gameLogoConfig = this.gameplayViewConfig.gameLogo;
+
+        this.gameLogo = new GameLogo(gameLogoConfig);
+
+        this.gameLogo.x = gameLogoConfig.globalPositions.x - this.gameLogo.width / 2;
+        this.gameLogo.y = gameLogoConfig.globalPositions.y;
+
+        this.addChild(this.gameLogo);
+    }
+
+    
     private createGameBoard() {
         this.currentBoardName = this.gameplayViewConfig.gameBoard.startBoardName;
 
