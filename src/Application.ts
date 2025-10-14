@@ -2,8 +2,8 @@ import * as PIXI from 'pixi.js'
 import { MainView } from './core/managers/MainView';
 import { BaseGameplay } from './core/managers/Gameplay';
 import { IGameConfig } from './core/utilies/interfaces/configs/gameConfig/IGameConfig';
-import { AssetManager } from './core/assets/AssetManager';
-import { PlayerManager } from './core/playerManager/PlayerManager';
+import { AssetManager } from './core/managers/AssetManager';
+import { PlayerManager } from './core/managers/PlayerManager';
 
 import commonConfig from './core/CommonConfig.json';
 import { IManagerHub } from './core/utilies/interfaces/configs/IManagerHub';

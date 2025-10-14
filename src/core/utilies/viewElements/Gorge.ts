@@ -5,6 +5,7 @@ import { IGorgeElementConfig } from "../interfaces/elementConfigs/IGorgeElementC
 import { BaseGameElement } from "./BaseGameElement";
 import { GameComponent } from "./GameComponent";
 import { Application } from "../../../Application";
+import { GameEvents } from "../GameEvents";
 
 export class Gorge extends BaseGameElement {
 
@@ -21,6 +22,10 @@ export class Gorge extends BaseGameElement {
         this.createGorgeView();
 
         this.interactive = true;
+
+        this.on('pointerup', () => {
+            this.app.emitter.emit(GameEvents.GORGE_TOUCH_TO_MOVE, this.getName());
+        })
     }
 
     public addNewGameComponent(gameComponent: GameComponent) {
@@ -57,6 +62,8 @@ export class Gorge extends BaseGameElement {
     public getElementsCount(): number {
         return this.currentGameComponents.size;
     }
+
+    // public get
 
     public getNextElementPosition(): PIXI.Point {
         if (this.gameComponentsPosition) {
@@ -98,11 +105,11 @@ export class Gorge extends BaseGameElement {
     private craateTransperentGorge() {
         const gfx = new PIXI.Graphics();
 
-        gfx.rect(0, 0, this.elementConfig.size.w, this.elementConfig.size.h)
+        gfx.rect(-this.elementConfig.size.w / 2, -this.elementConfig.size.h / 2, this.elementConfig.size.w, this.elementConfig.size.h)
         gfx.fill({
             color: 0xffffff, 
             alpha: Number.MIN_VALUE
-        })
+        });
 
         this.addChild(gfx);
     }

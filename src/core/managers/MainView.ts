@@ -3,7 +3,7 @@ import gsap from "gsap";
 
 import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
 import { Application } from "../../Application";
-import { GameEvents } from "../GameEvents";
+import { GameEvents } from "../utilies/GameEvents";
 import { GameplayView } from "../views/GameplayView";
 import { EndView } from "../views/EndView";
 import { LoadingView } from "../views/LoadingView";
@@ -127,7 +127,7 @@ export class MainView extends PIXI.Container {
             this.addChild(gameplayView);
         }
 
-        if (!this.views.has("endView")) {
+        if (!this.views.has("endView") && this.viewConfig.endViewElements) {
             const endView = new EndView(this.viewConfig.endViewElements);
             // endView.init();
             endView.visible = false;

@@ -1,5 +1,5 @@
 import { Application } from "../../Application";
-import { GameEvents } from "../GameEvents";
+import { GameEvents } from "../utilies/GameEvents";
 import { MessageBoard } from "../utilies/viewElements/MessageBoard";
 
 export class MessageManager {

@@ -1,12 +1,14 @@
 import { Application } from "../../Application";
-import { GameEvents } from "./../GameEvents";
-import { PlayerManager } from "./../playerManager/PlayerManager";
+import { GameEvents } from "../utilies/GameEvents";
+import { PlayerManager } from "./PlayerManager";
 import { GameStates } from "./../utilies/enums/GameStates";
+import { GameplayElementsManager } from "./GameplayElementsManager";
 
 export class BaseGameplay {
 
     protected app: Application;
     protected playerManager: PlayerManager;
+    protected gameplayElementsManager: GameplayElementsManager;
 
     protected currentGameState: GameStates;
     protected lastGameState: GameStates;

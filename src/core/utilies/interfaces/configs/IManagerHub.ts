@@ -1,7 +1,7 @@
-import { AssetManager } from "../../../assets/AssetManager";
+import { AssetManager } from "../../../managers/AssetManager";
 import { BaseGameplay } from "../../../managers/Gameplay";
 import { MessageManager } from "../../../managers/MessageManager";
-import { PlayerManager } from "../../../playerManager/PlayerManager";
+import { PlayerManager } from "../../../managers/PlayerManager";
 import { MainView } from "../../../managers/MainView";
 import { GameplayElementsManager } from "../../../managers/GameplayElementsManager";
 

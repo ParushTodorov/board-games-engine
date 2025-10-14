@@ -5,7 +5,7 @@ import { IElementConfig } from "../interfaces/elementConfigs/IElementConfig";
 import { IMoveable } from "../interfaces/elementConfigs/IMoveable";
 import { BaseGameElement } from "./BaseGameElement";
 import { Application } from "../../../Application";
-import { GameEvents } from "../../GameEvents";
+import { GameEvents } from "../GameEvents";
 
 export class GameComponent extends BaseGameElement implements IMoveable{
     
@@ -19,7 +19,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
         this.interactive = true;
         this.on(
             'pointerdown', () => {
-                this.app.emitter.emit(GameEvents.TOUCH_TO_MOVE, {startElement: this.getGorgeOwner(), element: this.getName()})
+                this.app.emitter.emit(GameEvents.GAME_ELEMENT_TOUCH_TO_MOVE, {startElement: this.getGorgeOwner(), element: this.getName()})
             }
         )
     }

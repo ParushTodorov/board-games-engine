@@ -1,9 +1,9 @@
-import { AssetManager } from "./assets/AssetManager";
+import { AssetManager } from "./managers/AssetManager";
 import { BaseGameplay } from "./managers/Gameplay";
 import { GameplayElementsManager } from "./managers/GameplayElementsManager";
 import { MainView } from "./managers/MainView";
 import { MessageManager } from "./managers/MessageManager";
-import { PlayerManager } from "./playerManager/PlayerManager";
+import { PlayerManager } from "./managers/PlayerManager";
 import { IManagerHub } from "./utilies/interfaces/configs/IManagerHub";
 
 export class BaseManagerHub implements IManagerHub {

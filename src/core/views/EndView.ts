@@ -18,6 +18,8 @@ export class EndView extends BaseView {
     }
     
     private createBackground() {
+        if (!this.config) return;
+        
         const backgroundConfig = this.config.elements["background"];
 
         if (!backgroundConfig) {

@@ -1,9 +1,9 @@
 import { Point } from "pixi.js";
 import { Application } from "../../Application";
-import { GameEvents } from "../../core/GameEvents";
+import { GameEvents } from "../../core/utilies/GameEvents";
 import { BaseGameplay } from "../../core/managers/Gameplay";
-import { Player } from "../../core/playerManager/Player";
-import { PlayerManager } from "../../core/playerManager/PlayerManager";
+import { Player } from "../../core/utilies/playerManager/Player";
+import { PlayerManager } from "../../core/managers/PlayerManager";
 import { GameComponent } from "../../core/utilies/viewElements/GameComponent";
 import { Gorge } from "../../core/utilies/viewElements/Gorge";
 import { GameplayView } from "../../core/views/GameplayView";
@@ -15,7 +15,6 @@ export class Gameplay extends BaseGameplay {
     private INIT_GAMECOMPONENTS_PER_GORGE: number = 4;
     private MAX_BALLS: number = 48; 
 
-    private gameplayElementsManager: GameplayElementsManager;
     private gorgeSequence = [0, 1, 2, 3, 4, 5, "right", 6, 7, 8, 9, 10, 11, "left"];
 
     private gorgeOwner: { [key: number]: number[]} = {
@@ -32,7 +31,7 @@ export class Gameplay extends BaseGameplay {
     public init() {
         super.init();
 
-        this.app.emitter.on(GameEvents.TOUCH_TO_MOVE, this.onTouchToMove, this);
+        this.app.emitter.on(GameEvents.GAME_ELEMENT_TOUCH_TO_MOVE, this.onTouchToMove, this);
 
         this.app.playerManager.addPlayer(new Player());
         this.app.playerManager.addPlayer(new Player());
