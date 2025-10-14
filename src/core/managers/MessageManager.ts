@@ -26,6 +26,7 @@ export class MessageManager {
 
     public onNewMessage(text: string, delayInMs?: number) {
         this.messageBoard.setText(text);
+        
         if (this.timeoutChange) {
             clearInterval(this.timeoutChange);
         }
@@ -39,6 +40,10 @@ export class MessageManager {
 
     public onClearMessage() {
         this.messageBoard.setText("");
+        
+        if (this.timeoutChange) {
+            clearInterval(this.timeoutChange);
+        }
     }
 
     public onPlayerChange(player: number) {

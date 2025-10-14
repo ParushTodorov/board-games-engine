@@ -8,6 +8,6 @@ export interface IBaseElementConfig {
     globalPositions: IPosition;
     anchor?: IPosition;
     componentsPosition?: {
-        [key: number]: IPosition;
+        [key: number | string]: IPosition;
     }
 }

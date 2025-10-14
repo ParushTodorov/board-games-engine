@@ -77,9 +77,10 @@ export class Gorge extends BaseGameElement {
     }
 
     private getElementRandomPosition() {
-            const x = Math.random() * this.width * 0.80 + this.width * 0.05;
-            const y = Math.random() * this.height * 0.80 + this.height * 0.05;
-            const position: PIXI.Point = new PIXI.Point(this.position.x  + x, this.position.y + y)
+            const x = Math.random() * this.width * 0.65 + this.width * 0.05;
+            const y = Math.random() * this.height * 0.75 + this.height * 0.05;
+            const position: PIXI.Point = new PIXI.Point(this.position.x + x, this.position.y + y);
+            console.log(this.position.x, x)
 
             return position;
     }

@@ -5,8 +5,8 @@
                 "name": "loading_view",
                 "assets": [
                     {
-                        "alias": "loadingBackground",
-                        "src": "/static/numbers/numberAtlas.json"
+                        "alias": "companyLogoAtlas",
+                        "src": "/static/common/CompanyLogoAtlas.json"
                     }
                 ]
             },
@@ -22,6 +22,39 @@
         ]
     },
     "elements": {
+        "loadingView": {
+            "assetName": "companyLogoAtlas",
+            "size": {
+                "w": 733,
+                "h": 927
+            },
+            "globalPositions": {
+                "x": 0,
+                "y": 0
+            },
+            "componentsPosition": {
+                "G": {
+                    "x": 0,
+                    "y": 34
+                },
+                "D": {
+                    "x": 379,
+                    "y": 104
+                },
+                "P": {
+                    "x": 341,
+                    "y": 34
+                },
+                "T": {
+                    "x": 0,
+                    "y": 0
+                },
+                "Gaming": {
+                    "x": 195,
+                    "y": 743
+                }
+            }
+        },
         "statusBar": {
             "assetName": "statusBar",
             "size": {

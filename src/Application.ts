@@ -27,8 +27,8 @@ export class Application {
 
     public viewSizes: {width: number, height: number, isLandscape: () => boolean} = {width: 0, height: 0, isLandscape: () => this.viewSizes.width > this.viewSizes.height};
 
-    protected gameConfig: IGameConfig;
-    protected commonConfig: ICommonConfig;
+    public gameConfig: IGameConfig;
+    public commonConfig: ICommonConfig;
 
     constructor(managerHub: IManagerHub, gameConfig: IGameConfig) {
         Application.APP = this;

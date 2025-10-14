@@ -120,11 +120,13 @@ export class Gameplay extends BaseGameplay {
             const playerTwoBalls = (this.gameplayElementsManager.getSingleElementByNameAndType('sideGorge-0', "gorge") as Gorge).getElementsCount();
             if (playerTwoBalls > 24) {
                 this.endGame(2);
+                return;
             }
             
             const playerOneBalls = (this.gameplayElementsManager.getSingleElementByNameAndType('sideGorge-1', "gorge") as Gorge).getElementsCount();
             if (playerOneBalls > 24) {
                 this.endGame(1);
+                return;
             }   
         };
 

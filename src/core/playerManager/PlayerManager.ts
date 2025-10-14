@@ -35,6 +35,7 @@ export class PlayerManager {
 
     public startGame() {
         this.playerOnTurn = this.players[1];
+        Object.values(this.players).forEach(player => player.points = 0);
     }
 
     public turnEnd() {

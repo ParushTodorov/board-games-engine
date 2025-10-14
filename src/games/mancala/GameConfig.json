@@ -31,6 +31,10 @@
                     {
                         "alias": "endViewBackground",
                         "src": "/static/mancala/EndViewBackground.png"
+                    },
+                    {
+                        "alias": "gameLogo",
+                        "src": "/static/mancala/GameLogo.png"
                     }
                 ]
             }
@@ -136,14 +140,14 @@
                 }
             },
             "alwaysOnViewBounds": {
-                "x": 50,
-                "y": 150,
-                "width": 1300,
-                "height": 500  
+                "x": 90,
+                "y": 50,
+                "width": 1220,
+                "height": 600  
             },
             "pivot": {
                 "x": 700,
-                "y": 425
+                "y": 400
             }
         },
         "endViewElements": {

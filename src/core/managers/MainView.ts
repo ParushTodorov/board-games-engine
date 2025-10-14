@@ -13,12 +13,15 @@ import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementCo
 import { IViewsConfig } from "../utilies/interfaces/configs/gameConfig/IViewsConfig";
 
 export class MainView extends PIXI.Container {
-    private app: Application;
-    private currentView: BaseView;
-    private statusBar: StatusBarView;
-    private views: Map<string, BaseView> = new Map();
-    private viewConfig: IViewsConfig;
-    private commonConfig: {[key: string]: IBaseElementConfig};
+    protected app: Application;
+    protected currentView: BaseView;
+    protected statusBar: StatusBarView;
+    protected views: Map<string, BaseView> = new Map();
+    protected viewConfig: IViewsConfig;
+    protected commonConfig: {[key: string]: IBaseElementConfig};
+
+    protected isAnimationPlaying: boolean = false;
+    protected interval: NodeJS.Timeout;
 
     constructor() {
         super();   
@@ -26,7 +29,7 @@ export class MainView extends PIXI.Container {
 
     public init(viewConfig: IViewsConfig, commonConfig: {[key: string]: IBaseElementConfig}) {
         this.app = Application.APP;
-        
+
         this.viewConfig = viewConfig;
         this.commonConfig = commonConfig;
 
@@ -64,14 +67,29 @@ export class MainView extends PIXI.Container {
         this.currentView.onResize();
     }
 
-    protected onLoadGame() {
+    protected async onLoadGame() {
         const loadingView = new LoadingView();
         this.currentView = loadingView;
         this.views.set("loadingView", loadingView);
         this.addChild(loadingView);
+        this.isAnimationPlaying = true;
+        await loadingView.playStartAnimation().then( () =>
+            { this.isAnimationPlaying = false }
+        );
     }
 
     public async onStartGame() {
+        clearInterval(this.interval);
+
+        const startGame = () => {
+            this.onStartGame();
+        }
+
+        if (this.isAnimationPlaying) {
+            this.interval = setInterval(startGame, 100);
+            return;
+        }
+
         await this.transitionTo("gameplayView");
         await this.show(this.statusBar);
     }
@@ -129,22 +147,24 @@ export class MainView extends PIXI.Container {
         await this.hide(this.currentView);
 
         this.currentView = this.getViewByName(nextViewName);
-        await this.show(this.currentView);
+        await this.show(this.currentView, 1);
     }
 
-    protected async show(view: BaseView) {
+    protected async show(view: BaseView, duration: number = 0.5) {
         view.onResize();
         view.alpha = 0;
         view.visible = true;
 
         await gsap.to(view, {
+            duration,
             alpha: 1
         })
     }
 
-    protected async hide(currentView: BaseView) {
+    protected async hide(currentView: BaseView, duration: number = 0.5) {
         await gsap.to(currentView, {
             alpha: 0,
+            duration,
             onComplete: () => currentView.visible = false
         })
     }
