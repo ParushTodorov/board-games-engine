@@ -23,8 +23,16 @@ export class Gorge extends BaseGameElement {
 
         this.interactive = true;
 
-        this.on('pointerup', () => {
-            this.app.emitter.emit(GameEvents.GORGE_TOUCH_TO_MOVE, this.getName());
+        this.on('pointerup', (e) => {
+            this.app.emitter.emit(GameEvents.GORGE_UP, e ,this.getName());
+        })
+
+        this.on('pointerenter', (e) => {
+            this.app.emitter.emit(GameEvents.GORGE_OVER, e ,this.getName());
+        })
+
+        this.on('pointerleave', (e) => {
+            this.app.emitter.emit(GameEvents.GORGE_OUT, e ,this.getName());
         })
     }
 
@@ -63,8 +71,6 @@ export class Gorge extends BaseGameElement {
         return this.currentGameComponents.size;
     }
 
-    // public get
-
     public getNextElementPosition(): PIXI.Point {
         if (this.gameComponentsPosition) {
             const nextElementId: number = this.getAllCurrentGameComponentsNames().length;
@@ -87,7 +93,6 @@ export class Gorge extends BaseGameElement {
             const x = Math.random() * this.width * 0.65 + this.width * 0.05;
             const y = Math.random() * this.height * 0.75 + this.height * 0.05;
             const position: PIXI.Point = new PIXI.Point(this.position.x + x, this.position.y + y);
-            console.log(this.position.x, x)
 
             return position;
     }

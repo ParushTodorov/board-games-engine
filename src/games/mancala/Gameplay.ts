@@ -31,7 +31,7 @@ export class Gameplay extends BaseGameplay {
     public init() {
         super.init();
 
-        this.app.emitter.on(GameEvents.GAME_ELEMENT_TOUCH_TO_MOVE, this.onTouchToMove, this);
+        this.app.emitter.on(GameEvents.GAME_COMPONENT_UP, this.onTouchToMove, this);
 
         this.app.playerManager.addPlayer(new Player());
         this.app.playerManager.addPlayer(new Player());
@@ -63,6 +63,8 @@ export class Gameplay extends BaseGameplay {
             for (let i=0; i < this.INIT_GAMECOMPONENTS_PER_GORGE; i++) {
                 const gameComponent = gameComponents.pop();
 
+                if (!gameComponent) return;
+
                 const {x, y} = gorge.getNextElementPosition();
                 gorge.addNewGameComponent(gameComponent);
 
@@ -78,7 +80,7 @@ export class Gameplay extends BaseGameplay {
         super.onStartNewGame();
     }
 
-    private async onTouchToMove(e: {startElement: string, element: string}): Promise<void> {
+    private async onTouchToMove(e: {event: any, startElement: string, element: string}): Promise<void> {
         if (this.currentGameState != GameStates.Gameplay || e.startElement.includes("side")) return;
 
         const startElement: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(e.startElement, "gorge") as Gorge;

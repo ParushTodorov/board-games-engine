@@ -16,7 +16,6 @@ export class AssetManager {
 
     public async initialLoad() {
         this.loadingAssets = await PIXI.Assets.loadBundle("loading_view");
-        console.log(this.loadingAssets);
         Application.APP.emitter.emit(GameEvents.LOAD_START_ASSETS);
     }
     

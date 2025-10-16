@@ -28,12 +28,15 @@ export class MessageManager {
         this.messageBoard.setText(text);
         
         if (this.timeoutChange) {
-            clearInterval(this.timeoutChange);
+            clearTimeout(this.timeoutChange);
+            this.timeoutChange = undefined;
         }
 
         if (delayInMs) {
             this.timeoutChange = setTimeout(() => {
                 this.messageBoard.setText(this.currentPlayerInfo);
+                clearTimeout(this.timeoutChange);
+                this.timeoutChange = undefined;
             }, delayInMs);
         }
     }
@@ -42,7 +45,8 @@ export class MessageManager {
         this.messageBoard.setText("");
         
         if (this.timeoutChange) {
-            clearInterval(this.timeoutChange);
+            clearTimeout(this.timeoutChange);
+            this.timeoutChange = undefined;
         }
     }
 

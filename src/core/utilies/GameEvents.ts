@@ -10,8 +10,13 @@ export class GameEvents {
     public static GAME_PAUSED = "GAME_PAUSED";
     public static GAME_RESUMED = "GAME_RESUMED";
 
-    public static GAME_ELEMENT_TOUCH_TO_MOVE = "GAME_ELEMENT_TOUCH_TO_MOVE";
-    public static GORGE_TOUCH_TO_MOVE = "GORGE_TOUCH_TO_MOVE";
+    public static GAME_COMPONENT_DOWN = "GAME_COMPONENT_DOWN";
+    public static GAME_COMPONENT_UP = "GAME_COMPONENT_UP";
+    
+    public static GORGE_UP = "GORGE_UP";
+    public static GORGE_OVER = "GORGE_OVER";
+    public static GORGE_OUT = "GORGE_OUT";
+
 
     // Messages
     public static NEW_MESSAGE = "NEW_MESSAGE";

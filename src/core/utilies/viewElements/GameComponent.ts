@@ -11,6 +11,8 @@ export class GameComponent extends BaseGameElement implements IMoveable{
     
     private _gorgeOwner: string = "";
 
+    private _isDragging: boolean = false;
+
     constructor(gameComponentConfig: IElementConfig) {
         super(gameComponentConfig);
 
@@ -18,21 +20,37 @@ export class GameComponent extends BaseGameElement implements IMoveable{
 
         this.interactive = true;
         this.on(
-            'pointerdown', () => {
-                this.app.emitter.emit(GameEvents.GAME_ELEMENT_TOUCH_TO_MOVE, {startElement: this.getGorgeOwner(), element: this.getName()})
+            'pointerdown', (e) => {
+                e.stopPropagation();
+                this.app.emitter.emit(GameEvents.GAME_COMPONENT_DOWN, e, this.getGorgeOwner(), this.getName())
+            }
+        );
+        this.on(
+            'pointerup', (e) => {
+                e.stopPropagation();
+                this.app.emitter.emit(GameEvents.GAME_COMPONENT_UP, e, this.getGorgeOwner(), this.getName())
             }
         )
     }
 
-    public async move(endPosition: IPosition) {
+    public async move(endPosition: IPosition, onComplete: () => void = ()=> {}) {
         await gsap.to(
             this,
             {
                 x: endPosition.x,
                 y: endPosition.y,
-                duration: 0.15
+                duration: 0.15,
+                onComplete
             },
         )
+    }
+
+    public async moveFromGlobalPosition(position: PIXI.Point) {
+        const endPosition = this.parent.toLocal(position);
+        endPosition.x -= this.width / 2;
+        endPosition.y -= this.height / 2;
+
+        await this.move(endPosition);
     }
 
     public setGorgeOwner(value: string) {
@@ -41,6 +59,18 @@ export class GameComponent extends BaseGameElement implements IMoveable{
 
     public getGorgeOwner(): string {
         return this._gorgeOwner;
+    }
+
+    public startDragging(): void {
+        this._isDragging = true;
+    }
+
+    public stopDragging(): void {
+        this._isDragging = false;
+    }
+
+    public isDragging(): boolean {
+        return this._isDragging;
     }
 
     private createGameCopmonentView() {

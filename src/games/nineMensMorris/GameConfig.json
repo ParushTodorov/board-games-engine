@@ -23,6 +23,10 @@
                     {
                         "alias": "playerTwo",
                         "src": "/static/nineMensMorris/PlayerTwo.png"
+                    },
+                    {
+                        "alias": "endViewBackground",
+                        "src": "/static/nineMensMorris/EndViewBackground.png"
                     }
                 ]
             }
@@ -143,6 +147,23 @@
             "pivot": {
                 "x": 484,
                 "y": 618.5
+            }
+        },
+        "endViewElements": {
+            "elements": {
+                "background": {
+                    "assetName": "endViewBackground"
+                }
+            },
+            "pivot": {
+                "x": 512,
+                "y": 493
+            },
+            "alwaysOnViewBounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1024,
+                "height": 985  
             }
         }
     }
