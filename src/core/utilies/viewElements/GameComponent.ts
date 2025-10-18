@@ -34,6 +34,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
     }
 
     public async move(endPosition: IPosition, onComplete: () => void = ()=> {}) {
+        this.app.emitter.emit(GameEvents.PLAY_SOUND, "movingSound")
         await gsap.to(
             this,
             {

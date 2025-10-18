@@ -8,6 +8,7 @@ import { PlayerManager } from './core/managers/PlayerManager';
 import commonConfig from './core/CommonConfig.json';
 import { IManagerHub } from './core/utilies/interfaces/configs/IManagerHub';
 import { GameplayElementsManager } from './core/managers/GameplayElementsManager';
+import { AudioManager } from './core/managers/AudioManager';
 
 type ICommonConfig = typeof commonConfig;
 
@@ -24,6 +25,7 @@ export class Application {
     public playerManager: PlayerManager;
     public assetManager: AssetManager;
     public gameplayManager: GameplayElementsManager;
+    public audioManager: AudioManager;
 
     public viewSizes: {width: number, height: number, isLandscape: () => boolean} = {width: 0, height: 0, isLandscape: () => this.viewSizes.width > this.viewSizes.height};
 
@@ -39,16 +41,14 @@ export class Application {
         this.mainView = managerHub.mainView;
         this.gameplay = managerHub.gameplay;
         this.playerManager = managerHub.playerManager;
-        this.gameplayManager = managerHub.gameplayElementsManager
+        this.gameplayManager = managerHub.gameplayElementsManager;
+        this.audioManager = managerHub.audioManager;
     }
     
     public async init() {
         await this.createPixiApplication();
 
-        this.mainView.init(this.gameConfig.views, this.commonConfig.elements);
-        this.pixiApp.stage.addChild(this.mainView);
-
-        this.gameplay.init();
+        this.initializeManagers();
 
         await this.loadStaticFiles();
         
@@ -72,6 +72,14 @@ export class Application {
         this.pixiApp.renderer.resize(this.viewSizes.width, this.viewSizes.height);
 
         this.emitter = new PIXI.EventEmitter();
+    }
+
+    private initializeManagers() {
+        this.mainView.init(this.gameConfig.views, this.commonConfig.elements);
+        this.pixiApp.stage.addChild(this.mainView);
+
+        this.gameplay.init();
+        this.audioManager.init();
     }
 
     private async loadStaticFiles() {

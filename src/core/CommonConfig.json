@@ -18,6 +18,15 @@
                         "src": "/static/common/StatusBar.png"
                     }
                 ]
+            },
+            {
+                "name": "auido_assets",
+                "assets": [
+                    {
+                        "alias": "movingSound",
+                        "src":"/static/sounds/sfx/MovingSound.wav"
+                    }    
+                ]
             }
         ]
     },

@@ -4,6 +4,7 @@ import { MessageManager } from "../../../managers/MessageManager";
 import { PlayerManager } from "../../../managers/PlayerManager";
 import { MainView } from "../../../managers/MainView";
 import { GameplayElementsManager } from "../../../managers/GameplayElementsManager";
+import { AudioManager }  from "../../../managers/AudioManager";
 
 export interface IManagerHub {
     gameplay: BaseGameplay;
@@ -12,4 +13,5 @@ export interface IManagerHub {
     messageManager: MessageManager;
     playerManager: PlayerManager;
     gameplayElementsManager: GameplayElementsManager;
+    audioManager: AudioManager;
 }

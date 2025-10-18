@@ -17,6 +17,8 @@ export class GameEvents {
     public static GORGE_OVER = "GORGE_OVER";
     public static GORGE_OUT = "GORGE_OUT";
 
+    public static PLAY_SOUND = "PLAY_SOUND";
+    public static PLAY_LOOP = "PLAY_LOOP";
 
     // Messages
     public static NEW_MESSAGE = "NEW_MESSAGE";
