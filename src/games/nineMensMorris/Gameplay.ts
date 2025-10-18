@@ -69,6 +69,7 @@ export class Gameplay extends BaseGameplay {
         gameComponents.forEach(gameComponent => {
             gameComponent.x = 0;
             gameComponent.y = 0;
+            gameComponent.visible = true;
 
             if (gameComponent.getName().includes('playerOne')) {
                 this.playerGameComponents[1].push(gameComponent);
