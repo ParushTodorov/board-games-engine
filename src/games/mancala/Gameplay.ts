@@ -28,6 +28,8 @@ export class Gameplay extends BaseGameplay {
 
     private capturedBalls: number = 0;
 
+    private isMoving: boolean = false;
+
     public init() {
         super.init();
 
@@ -80,14 +82,16 @@ export class Gameplay extends BaseGameplay {
         super.onStartNewGame();
     }
 
-    private async onTouchToMove(e: {event: any, startElement: string, element: string}): Promise<void> {
-        if (this.currentGameState != GameStates.Gameplay || e.startElement.includes("side")) return;
+    private async onTouchToMove(event: any, startElementName: string, element: string): Promise<void> {
+        if (this.isMoving || this.currentGameState != GameStates.Gameplay || startElementName.includes("side")) return;
 
-        const startElement: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(e.startElement, "gorge") as Gorge;
+        const startElement: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(startElementName, "gorge") as Gorge;
         const startId = Number.parseInt(startElement.getName().split("-")[1]);
         const playerOnTurnId = this.playerManager.playerOnTurnId();
 
         if (!this.gorgeOwner[playerOnTurnId].includes(startId)) return;
+
+        this.isMoving = true;
 
         const gameComponents = startElement.removeAllGameComponents();
 
@@ -132,6 +136,7 @@ export class Gameplay extends BaseGameplay {
         };
 
         await this.finishTheMove(currentIndex, currentGorgeBall);
+        this.isMoving = false;
         this.showCurrentPlayer();
     }
 
