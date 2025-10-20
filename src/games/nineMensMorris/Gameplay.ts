@@ -6,12 +6,10 @@ import { Gorge } from "../../core/utilies/viewElements/Gorge";
 import { GameComponent } from "../../core/utilies/viewElements/GameComponent";
 import { Player } from "../../core/utilies/playerManager/Player";
 import { GamePhases } from "./utilis/GamePhases";
-import { rawMap } from "./utilis/RawMap";
+import { millsMap } from "./utilis/MillsMap";
 import { nodeMap } from "./utilis/NodeMap";
-import { Occupation } from "./utilis/Occupation";
+import { Occupation } from "../../core/utilies/enums/Occupation";
 import { FederatedPointerEvent } from "pixi.js";
-import { IDimension } from "../../core/utilies/interfaces/common/IDimension";
-import { IPosition } from "../../core/utilies/interfaces/common/IPosition";
 
 export class Gameplay extends BaseGameplay {
     private playerGameComponents: {[key: number]: GameComponent[]} = {
@@ -19,15 +17,19 @@ export class Gameplay extends BaseGameplay {
         2: []
     }
 
-    private occupationMap: {[key: number]: Occupation} = {}
     private gamePhase: {[key: number]: GamePhases} = {
         1: GamePhases.Placing,
         2: GamePhases.Placing
     }
 
+    private playerIdToNameMap: {[key: number]: string} = {
+        1: "playerOne",
+        2: "playerTwo"
+    }
+
     private isMillActivated: boolean = false;
 
-    private addListnerFunc?: (this: Window, ev: PointerEvent) => any;
+    private startGameComponentsOffset = 5;
 
     constructor() {
         super();
@@ -49,12 +51,13 @@ export class Gameplay extends BaseGameplay {
             this.gameplayElementsManager = this.app.gameplayManager;
         }
 
+        if (!this.dragManager) {
+            this.dragManager = this.app.dragManager;
+            this.dragManager.init();
+        }
+
         const gorges: Gorge[] = this.gameplayElementsManager.getAllElementsByType("gorge") as Gorge[];
         const gameComponents: GameComponent[] = this.gameplayElementsManager.getAllElementsByType("gameComponent") as GameComponent[];
-
-        if(!this.gorgeDimensionMap) {
-            this.creategorgeDimensionMap();
-        }
 
         if (gameComponents.length != 18) {
             console.warn("There must be 18 game components for this games");
@@ -66,27 +69,28 @@ export class Gameplay extends BaseGameplay {
             return;
         }
 
+        const {x, y, width} = this.app.gameplayManager.getCurrentBoard();
+
         gameComponents.forEach(gameComponent => {
-            gameComponent.x = 0;
-            gameComponent.y = 0;
             gameComponent.visible = true;
+            gameComponent.interactive = false;
 
             if (gameComponent.getName().includes('playerOne')) {
+                gameComponent.x = x - gameComponent.width - this.startGameComponentsOffset;
+                gameComponent.y = y + (this.playerGameComponents[1].length) * (gameComponent.height + this.startGameComponentsOffset);
                 this.playerGameComponents[1].push(gameComponent);
                 return;
             }
 
+            gameComponent.x = x + width + this.startGameComponentsOffset;
+            gameComponent.y = y + (this.playerGameComponents[2].length) * (gameComponent.height + this.startGameComponentsOffset);
             this.playerGameComponents[2].push(gameComponent);
-        })
-
-        gorges.forEach((gorge) => {
-            gorge.removeAllGameComponents();
         });
 
-        this.occupationMap = {};
-        for (let i=0; i< 24; i++) {
-            this.occupationMap[i] = Occupation.Empty;
-        }
+        gorges.forEach((gorge, index) => {
+            gorge.removeAllGameComponents();
+            this.dragManager.setOccupation(index, Occupation.Empty);
+        });
 
         this.playerManager.startGame();
         this.showCurrentPlayer();
@@ -100,47 +104,38 @@ export class Gameplay extends BaseGameplay {
     }
 
     protected async onGorgeTouch(event: any, gorgeName: string) {
-        if (this.isMillActivated) return;
+        if (this.isMillActivated || this.gamePhase[this.playerManager.playerOnTurnId()] != GamePhases.Placing) return;
 
-        switch(this.gamePhase[this.playerManager.playerOnTurnId()]) {
-            case GamePhases.Placing:
-                return this.onPlacingPhase(gorgeName);
-            default:
-                return;
-        }
+        this.onPlacingPhase(gorgeName);
     }
 
     protected async onDragStart(event: FederatedPointerEvent, startElement: string, element: string) {
-        if (this.gamePhase[this.playerManager.playerOnTurnId()] === GamePhases.Placing) return;
+        if (this.gamePhase[this.playerManager.playerOnTurnId()] === GamePhases.Placing || this.isMillActivated) return;
 
         const gameComponent: GameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(element, "gameComponent") as GameComponent;
 
-        if (gameComponent.getName().includes('playerTwo') && this.playerManager.playerOnTurnId() === 1) return;
+        if (!this.isGameCompomemtOwnedByCurrentPlayerTurn(gameComponent)) return;
 
-        gameComponent.startDragging();
-
-        this.addListnerFunc = (e) => {
-            if (!gameComponent.isDragging()) return;
-
-            gameComponent.moveFromGlobalPosition(new PIXI.Point(e.x, e.y));
-        }
-
-        window.addEventListener('pointermove', this.addListnerFunc)
+        this.dragManager.startDragging(gameComponent);
     }
 
     protected async onTouchToMove(event: any, startElement: string, element: string) {
+        const gameComponent: GameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(element, 'gameComponent') as GameComponent;
+
         if (!this.isMillActivated) {
             switch(this.gamePhase[this.playerManager.playerOnTurnId()]) {
                 case GamePhases.Moving:
-                    return this.onMovingPhase(event, startElement, element);
+                    return this.onMovingPhase(gameComponent);
                 case GamePhases.Flying:
-                    return this.onFlyingPhase(event, startElement, element);
+                    return this.onFlyingPhase(gameComponent);
                 default:
                     return;
             }
         };    
 
-        const isGameComponentCaptured = this.isGameComponentCaptured(startElement, element);
+        if (this.isGameCompomemtOwnedByCurrentPlayerTurn(gameComponent)) return;
+
+        const isGameComponentCaptured = await this.isGameComponentCaptured(gameComponent);
                 
         if (!isGameComponentCaptured) return;
 
@@ -155,13 +150,16 @@ export class Gameplay extends BaseGameplay {
 
         const gameComponent = this.playerGameComponents[this.playerManager.playerOnTurnId()].pop()!;
         gorge.addNewGameComponent(gameComponent);
-        this.occupationMap[gorge.getId()] = this.playerManager.playerOnTurnId();
+        this.dragManager.setOccupation(gorge.getId(), this.playerManager.playerOnTurnId());
         
         const finalPosition = {
             x: gorge.position.x - gameComponent.width / 2,
             y: gorge.position.y - gameComponent.height / 2
         }
+
         await gameComponent.move(finalPosition);
+        this.app.emitter.emit(GameEvents.PLAY_SOUND, "movingSound");
+        gameComponent.interactive = true;
 
         if (this.isMill(gorge.getId(), this.playerManager.playerOnTurnId())) {
             return;
@@ -170,76 +168,34 @@ export class Gameplay extends BaseGameplay {
         this.finishPlayerTurn();
     }
 
-    private async onMovingPhase(event: any, startElement: string, element: string) {
+    private async onMovingPhase(gameComponent: GameComponent) {
         const canBeOccupied: (startId: number, endId: number) => boolean = (startId, endId) => {
-            return this.occupationMap[endId] === Occupation.Empty && nodeMap[startId].includes(endId);
+            return this.dragManager.getOccupation(endId) === Occupation.Empty && nodeMap[startId].includes(endId);
         }
 
-        const isTurnEnded = await this.onDragMoveEnd(event, startElement, element, canBeOccupied);
+        this.dragManager.canBeOccupied = canBeOccupied;
 
-        if (!isTurnEnded) return;
+        if (await this.onDragMoveEnd(gameComponent)) return;
 
         this.finishPlayerTurn();
     }
 
-    private async onFlyingPhase(event: any, startElement: string, element: string) {
+    private async onFlyingPhase(gameComponent: GameComponent) {
         const canBeOccupied: (startId: number, endId: number) => boolean = (startId, endId) => {
-            return this.occupationMap[endId] === Occupation.Empty;
+            return this.dragManager.getOccupation(endId) === Occupation.Empty;
         }
 
-        const isTurnEnded = await this.onDragMoveEnd(event, startElement, element, canBeOccupied);
+        this.dragManager.canBeOccupied = canBeOccupied;
 
-        if (!isTurnEnded) return;
+        if (await this.onDragMoveEnd(gameComponent)) return;
 
         this.finishPlayerTurn();
     }
 
-    private async onDragMoveEnd(event: any, startElement: string, element: string, canBeOccupied: (startId: number, endId: number) => boolean) {
-        if (!this.addListnerFunc) return;
+    private async onDragMoveEnd(gameComponent: GameComponent): Promise<boolean> {        
+        let isTurnEnded = await this.dragManager.stopDragging(gameComponent);
 
-        let isTurnEnded = false;
-
-        window.removeEventListener('pointermove', this.addListnerFunc!);
-        this.addListnerFunc = undefined;
-
-        const gameComponent: GameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(element, "gameComponent") as GameComponent;
-        gameComponent.stopDragging();
-        
-        let gorge: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(gameComponent.getGorgeOwner(), 'gorge') as Gorge;        
-        
-        let { x, y } = gameComponent;
-
-        x += gameComponent.width / 2;
-        y += gameComponent.height / 2;
-
-        const gorgeName: string | undefined = this.testCollision(new PIXI.Point(x, y));
-        const id = parseInt(gorgeName?.split("-")[1]!)
-
-        let finalPosition: IPosition = {
-            x: gorge.position.x - gameComponent.width / 2,
-            y: gorge.position.y - gameComponent.height / 2
-        };
-
-        if (gorgeName && canBeOccupied(gorge.getId(), id)) {
-            gorge.removeAllGameComponents();
-            this.occupationMap[gorge.getId()] = Occupation.Empty;
-            
-            gorge = this.gameplayElementsManager.getSingleElementByNameAndType(gorgeName, 'gorge') as Gorge;
-            this.occupationMap[gorge.getId()] = this.playerManager.playerOnTurnId();
-            
-            gorge.addNewGameComponent(gameComponent);
-            
-            finalPosition = {
-                x: gorge.position.x - gameComponent.width / 2,
-                y: gorge.position.y - gameComponent.height / 2
-            }
-
-            isTurnEnded = true;
-        }
-        
-        await gameComponent.move(finalPosition);
-
-        if (isTurnEnded && this.isMill(gorge.getId(), this.playerManager.playerOnTurnId())) {
+        if (isTurnEnded && this.isMill((gameComponent.getGorgeOwner() as Gorge).getId(), this.playerManager.playerOnTurnId())) {
             isTurnEnded = false;
         } 
 
@@ -250,49 +206,54 @@ export class Gameplay extends BaseGameplay {
         const currnetPlayer = this.playerManager.playerOnTurnId();
         const nextPlayer = this.playerManager.nextPlaterId();
 
-        if (this.playerGameComponents[currnetPlayer].length === 0 && this.gamePhase[currnetPlayer] === GamePhases.Placing) {
+        if (this.playerGameComponents[currnetPlayer].length === 0 && this.playerGameComponents[nextPlayer].length === 0 && this.gamePhase[currnetPlayer] === GamePhases.Placing) {
             this.gamePhase[currnetPlayer] = GamePhases.Moving;
+            this.gamePhase[nextPlayer] = GamePhases.Moving;
             this.app.emitter.emit(GameEvents.NEW_MESSAGE, 'It is moving pieces phase', 2000);
         }
 
-        if (Object.values(this.occupationMap).filter(o => o === nextPlayer).length === 3 && this.gamePhase[nextPlayer] === GamePhases.Moving) {
+        const nextPlayerGameComponentsCount: number = Object.values(this.dragManager.getOccupationMap()).filter(o => o === nextPlayer).length;
+
+        if (nextPlayerGameComponentsCount === 3 && this.gamePhase[nextPlayer] === GamePhases.Moving) {
             this.gamePhase[nextPlayer] = GamePhases.Flying;
             this.app.emitter.emit(GameEvents.NEW_MESSAGE, `It is flying pieces phase for ${nextPlayer}`, 2000);
         }
 
-        if (Object.values(this.occupationMap).filter(o => o === nextPlayer).length < 3 && (this.gamePhase[currnetPlayer] === GamePhases.Flying || this.gamePhase[nextPlayer] === GamePhases.Flying)) {
-            this.app.emitter.emit(GameEvents.NEW_MESSAGE, `${currnetPlayer} is a winner!!!`, 2000);
+        if (nextPlayerGameComponentsCount < 3 && (this.gamePhase[currnetPlayer] === GamePhases.Flying || this.gamePhase[nextPlayer] === GamePhases.Flying)) {
+            this.app.emitter.emit(GameEvents.NEW_MESSAGE, `${currnetPlayer} is a winner!!!`);
             this.app.emitter.emit(GameEvents.GAME_END);
             return;
         }
 
-        console.log("Empty: ", Object.values(this.occupationMap).filter(o => o === Occupation.Empty).length);
-
         this.changePlayerTurn(); 
     }
 
-    private isGameComponentCaptured(gorgeName: string, gameComponentName: string) {
-        const gameComponent: GameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(gameComponentName, "gameComponent") as GameComponent;
-        const gorge: Gorge = this.gameplayElementsManager.getSingleElementByNameAndType(gorgeName, "gorge") as Gorge;
+    private async isGameComponentCaptured(gameComponent: GameComponent) {
+        if (!this.isCapturedPosible()) {
+            this.app.emitter.emit(GameEvents.NEW_MESSAGE, `No pools outside the mills!`, 2000);
+            return true;
+        }
+
+        const gorge: Gorge = gameComponent.getGorgeOwner()!;
 
         if (!gorge.getElementsCount()) {
             gorge.addNewGameComponent(gameComponent);
         }
         
-        if (!gorge || this.occupationMap[gorge.getId()] === this.playerManager.playerOnTurnId()) return false;
+        if (!gorge || this.dragManager.getOccupation(gorge.getId()) === this.playerManager.playerOnTurnId()) return false;
 
         if (this.isMill(gorge.getId(), this.playerManager.nextPlaterId())) return false;
 
         gorge.removeAllGameComponents();
-        this.occupationMap[gorge.getId()] = Occupation.Empty;
+        this.dragManager.setOccupation(gorge.getId(), Occupation.Empty);
 
-        gameComponent.move({x: 0, y: 0}, () => {gameComponent.visible = false});
+        await gameComponent.move({x: 0, y: 0}, () => {gameComponent.visible = false});
         
         return true;
     }
 
     private isMill(gorgeId: number, player: number) {
-        const mills = rawMap.filter(mill => mill.includes(gorgeId));
+        const mills = millsMap.filter(mill => mill.includes(gorgeId));
 
         let result = false;
 
@@ -300,7 +261,7 @@ export class Gameplay extends BaseGameplay {
             let isMill = true;
 
             mill.forEach(m => {
-                if (this.occupationMap[m] != player) {
+                if (this.dragManager.getOccupation(m) != player) {
                     isMill = false;
                     return;
                 }
@@ -316,30 +277,56 @@ export class Gameplay extends BaseGameplay {
         return result;
     }
 
-    private testCollision(point: PIXI.Point): string | undefined {
-        let result!: string;
-        Object.entries(this.gorgeDimensionMap).forEach(gorgeDimension => {
-            if (this.isCollision(point, gorgeDimension[1])) {
-                result = gorgeDimension[0];
-            }
-        })
+    private isGameCompomemtOwnedByCurrentPlayerTurn(gameComponent: GameComponent) {
+        const currentPlayerName = this.playerIdToNameMap[this.playerManager.playerOnTurnId()];
 
-        return result;
-    }
-
-    private isCollision(point: PIXI.Point, dimension: IDimension) {        
-        if ((dimension.x - dimension.width / 2) < point.x 
-            && point.x < (dimension.x + dimension.width / 2) 
-            && (dimension.y - dimension.width / 2) < point.y 
-            && point.y < (dimension.y + dimension.width / 2))
-                return true;
-
-        return false;
+        return gameComponent.getName().includes(currentPlayerName);
     }
 
     private changePlayerTurn(): void {
         this.playerManager.turnEnd();
         this.showCurrentPlayer();
+    }
+
+    private isCapturedPosible() {
+        const nextPlayer = this.playerManager.nextPlaterId();
+        const currentMills: [number, number, number][]= [];
+
+        const occupiedArray: [string, Occupation][] = Object.entries(this.dragManager.getOccupationMap()).filter(o => o[1] === nextPlayer);
+        let counter: number = 0;
+
+        occupiedArray.forEach(occupied => {
+            const gorgeId = Number.parseInt(occupied[0]);
+
+            if (currentMills.filter(mill => mill.includes(gorgeId)).length > 0) {
+                counter++;
+                return;
+            };
+
+            const mills = millsMap.filter(mill => mill.includes(gorgeId));
+
+            mills.forEach(mill => {
+                let isMill = true;
+
+                mill.forEach(m => {
+                    if (this.dragManager.getOccupation(m) != nextPlayer) {
+                        isMill = false;
+                        return;
+                    }
+                });
+
+                if (isMill) {
+                    counter++;
+                    currentMills.push(mill);
+                }
+            })
+        })
+
+        if (counter != occupiedArray.length) {
+            return true;
+        }
+
+        return false;
     }
 
     private showCurrentPlayer() {

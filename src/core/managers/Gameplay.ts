@@ -3,19 +3,16 @@ import { GameEvents } from "../utilies/GameEvents";
 import { PlayerManager } from "./PlayerManager";
 import { GameStates } from "./../utilies/enums/GameStates";
 import { GameplayElementsManager } from "./GameplayElementsManager";
-import { IDimension } from "../utilies/interfaces/common/IDimension";
-import { Gorge } from "../utilies/viewElements/Gorge";
-
+import { DragManager } from "./DragManager";
 export class BaseGameplay {
 
     protected app: Application;
     protected playerManager: PlayerManager;
     protected gameplayElementsManager: GameplayElementsManager;
+    protected dragManager: DragManager;
 
     protected currentGameState: GameStates;
     protected lastGameState: GameStates;
-
-    protected gorgeDimensionMap: {[key: string]: IDimension};
 
     constructor() {
         this.currentGameState = GameStates.Loading;
@@ -52,19 +49,5 @@ export class BaseGameplay {
     protected onResumeGame() {
         this.changeGameState(this.lastGameState);
         this.app.emitter.emit(GameEvents.GAME_RESUMED);
-    }
-
-    protected creategorgeDimensionMap() {
-        this.gorgeDimensionMap = {};
-        const gorge = this.gameplayElementsManager.getAllElementsByType('gorge') as Gorge[];
-
-        gorge.forEach(g => {
-            this.gorgeDimensionMap[g.getName()] = {
-                x: g.x,
-                y: g.y,
-                width: g.width,
-                height: g.height
-            } 
-        })
     }
 }   

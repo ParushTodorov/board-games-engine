@@ -4,7 +4,6 @@ import { IPosition } from "../interfaces/common/IPosition";
 import { IGorgeElementConfig } from "../interfaces/elementConfigs/IGorgeElementConfig";
 import { BaseGameElement } from "./BaseGameElement";
 import { GameComponent } from "./GameComponent";
-import { Application } from "../../../Application";
 import { GameEvents } from "../GameEvents";
 
 export class Gorge extends BaseGameElement {
@@ -37,7 +36,7 @@ export class Gorge extends BaseGameElement {
     }
 
     public addNewGameComponent(gameComponent: GameComponent) {
-        gameComponent.setGorgeOwner(this.getName());
+        gameComponent.setGorgeOwner(this);
         this.currentGameComponents.set(gameComponent.getName(), gameComponent);
     }
 
@@ -45,14 +44,14 @@ export class Gorge extends BaseGameElement {
         if (!this.currentGameComponents.has(gameComponentName)) return;
 
         const gameComponent = this.currentGameComponents.get(gameComponentName);
-        gameComponent&& gameComponent.setGorgeOwner("");
+        gameComponent&& gameComponent.setGorgeOwner(undefined);
         this.currentGameComponents.delete(gameComponentName);
     }
 
     public removeAllGameComponents() {
         const allGameComponents = this.getAllCurrentGameComponents()
         allGameComponents.forEach(
-            el => el.setGorgeOwner("")
+            el => el.setGorgeOwner(undefined)
         )
         this.currentGameComponents.clear();
 

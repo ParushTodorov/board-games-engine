@@ -5,6 +5,7 @@ import { PlayerManager } from "../../../managers/PlayerManager";
 import { MainView } from "../../../managers/MainView";
 import { GameplayElementsManager } from "../../../managers/GameplayElementsManager";
 import { AudioManager }  from "../../../managers/AudioManager";
+import { DragManager } from "../../../managers/DragManager";
 
 export interface IManagerHub {
     gameplay: BaseGameplay;
@@ -14,4 +15,5 @@ export interface IManagerHub {
     playerManager: PlayerManager;
     gameplayElementsManager: GameplayElementsManager;
     audioManager: AudioManager;
+    dragManager: DragManager;
 }

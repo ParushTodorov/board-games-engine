@@ -75,6 +75,7 @@ export class Gameplay extends BaseGameplay {
             }
         })
 
+        this.isMoving = false;
         this.capturedBalls = 0;
         this.playerManager.startGame();
         this.showCurrentPlayer();
@@ -143,6 +144,7 @@ export class Gameplay extends BaseGameplay {
     private async moveBallToNewGoroge(gameComponent: GameComponent, newGorge: Gorge) : Promise<Point> {
             const finalDestination = newGorge.getNextElementPosition();
             await gameComponent.move(finalDestination);
+            this.app.emitter.emit(GameEvents.PLAY_SOUND, "movingSound");
             newGorge.addNewGameComponent(gameComponent);
 
             // Capture no change of score

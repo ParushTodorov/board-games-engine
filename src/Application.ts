@@ -9,6 +9,7 @@ import commonConfig from './core/CommonConfig.json';
 import { IManagerHub } from './core/utilies/interfaces/configs/IManagerHub';
 import { GameplayElementsManager } from './core/managers/GameplayElementsManager';
 import { AudioManager } from './core/managers/AudioManager';
+import { DragManager } from './core/managers/DragManager';
 
 type ICommonConfig = typeof commonConfig;
 
@@ -26,6 +27,7 @@ export class Application {
     public assetManager: AssetManager;
     public gameplayManager: GameplayElementsManager;
     public audioManager: AudioManager;
+    public dragManager: DragManager;
 
     public viewSizes: {width: number, height: number, isLandscape: () => boolean} = {width: 0, height: 0, isLandscape: () => this.viewSizes.width > this.viewSizes.height};
 
@@ -43,6 +45,7 @@ export class Application {
         this.playerManager = managerHub.playerManager;
         this.gameplayManager = managerHub.gameplayElementsManager;
         this.audioManager = managerHub.audioManager;
+        this.dragManager = managerHub.dragManager;
     }
     
     public async init() {

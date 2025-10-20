@@ -1,5 +1,6 @@
 import { AssetManager } from "./managers/AssetManager";
 import { AudioManager } from "./managers/AudioManager";
+import { DragManager } from "./managers/DragManager";
 import { BaseGameplay } from "./managers/Gameplay";
 import { GameplayElementsManager } from "./managers/GameplayElementsManager";
 import { MainView } from "./managers/MainView";
@@ -15,6 +16,7 @@ export class BaseManagerHub implements IManagerHub {
     public playerManager: PlayerManager;
     public gameplayElementsManager: GameplayElementsManager;
     public audioManager: AudioManager;
+    public dragManager: DragManager;
 
     constructor() {
         this.mainView = new MainView();
@@ -24,5 +26,6 @@ export class BaseManagerHub implements IManagerHub {
         this.playerManager = new PlayerManager();
         this.gameplayElementsManager = new GameplayElementsManager();
         this.audioManager = new AudioManager();
+        this.dragManager = new DragManager();
     }
 }

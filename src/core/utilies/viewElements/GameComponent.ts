@@ -6,10 +6,11 @@ import { IMoveable } from "../interfaces/elementConfigs/IMoveable";
 import { BaseGameElement } from "./BaseGameElement";
 import { Application } from "../../../Application";
 import { GameEvents } from "../GameEvents";
+import { Gorge } from "./Gorge";
 
 export class GameComponent extends BaseGameElement implements IMoveable{
     
-    private _gorgeOwner: string = "";
+    private _gorgeOwner: Gorge;
 
     private _isDragging: boolean = false;
 
@@ -22,19 +23,18 @@ export class GameComponent extends BaseGameElement implements IMoveable{
         this.on(
             'pointerdown', (e) => {
                 e.stopPropagation();
-                this.app.emitter.emit(GameEvents.GAME_COMPONENT_DOWN, e, this.getGorgeOwner(), this.getName())
+                this.app.emitter.emit(GameEvents.GAME_COMPONENT_DOWN, e, this.getGorgeOwner().getName(), this.getName())
             }
         );
         this.on(
             'pointerup', (e) => {
                 e.stopPropagation();
-                this.app.emitter.emit(GameEvents.GAME_COMPONENT_UP, e, this.getGorgeOwner(), this.getName())
+                this.app.emitter.emit(GameEvents.GAME_COMPONENT_UP, e, this.getGorgeOwner().getName(), this.getName())
             }
         )
     }
 
     public async move(endPosition: IPosition, onComplete: () => void = ()=> {}) {
-        this.app.emitter.emit(GameEvents.PLAY_SOUND, "movingSound")
         await gsap.to(
             this,
             {
@@ -43,7 +43,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
                 duration: 0.15,
                 onComplete
             },
-        )
+        );
     }
 
     public async moveFromGlobalPosition(position: PIXI.Point) {
@@ -54,11 +54,11 @@ export class GameComponent extends BaseGameElement implements IMoveable{
         await this.move(endPosition);
     }
 
-    public setGorgeOwner(value: string) {
+    public setGorgeOwner(value: Gorge | undefined) {
         this._gorgeOwner = value;
     }
 
-    public getGorgeOwner(): string {
+    public getGorgeOwner(): Gorge | undefined {
         return this._gorgeOwner;
     }
 
