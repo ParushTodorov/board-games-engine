@@ -175,7 +175,7 @@ export class Gameplay extends BaseGameplay {
 
         this.dragManager.canBeOccupied = canBeOccupied;
 
-        if (await this.onDragMoveEnd(gameComponent)) return;
+        if (!await this.onDragMoveEnd(gameComponent)) return;
 
         this.finishPlayerTurn();
     }
@@ -187,7 +187,7 @@ export class Gameplay extends BaseGameplay {
 
         this.dragManager.canBeOccupied = canBeOccupied;
 
-        if (await this.onDragMoveEnd(gameComponent)) return;
+        if (!await this.onDragMoveEnd(gameComponent)) return;
 
         this.finishPlayerTurn();
     }
