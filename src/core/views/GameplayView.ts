@@ -4,7 +4,6 @@ import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfi
 import { IGorgeConfig } from "../utilies/interfaces/configs/gameConfig/IGorgeConfig";
 import { IElementConfig } from "../utilies/interfaces/elementConfigs/IElementConfig";
 import { IGorgeElementConfig } from "../utilies/interfaces/elementConfigs/IGorgeElementConfig";
-import { GameElementType } from "../utilies/types/GameElementTypes";
 import { BaseView } from "./BaseView";
 import { GameBoard } from "../utilies/viewElements/GameBoard";
 import { GameComponent } from "../utilies/viewElements/GameComponent";
@@ -14,15 +13,12 @@ import { Background } from "../utilies/viewElements/Background";
 
 export class GameplayView extends BaseView {
 
-    private gameplayViewConfig: IGameViewElementsConfig;
+    protected gameplayViewConfig: IGameViewElementsConfig;
     
-    private background: Background;
-    private gameLogo: GameLogo;
-    private gameBoards: Map<string, GameBoard> = new Map();
-    private gorges: Map<string, Gorge> = new Map();
-    private gameComponents: Map<string, GameComponent> = new Map();
+    protected background: Background;
+    protected gameLogo: GameLogo;
 
-    private currentBoardName: string;
+    protected currentBoardName: string;
 
     constructor(gameplayViewConfig: IGameViewElementsConfig) {
         super();
@@ -33,10 +29,10 @@ export class GameplayView extends BaseView {
 
     public init() {
         this.createBackground();
-        this.createGameLogo();
         this.createGameBoard();
         this.createGorges();
         this.createGameComponents();
+        this.createGameLogo();
         this.onResize();
     }
 
@@ -91,6 +87,7 @@ export class GameplayView extends BaseView {
                 this.app.gameplayManager.setElement('board', config.assetName, gameBoard);
 
                 if (this.currentBoardName === value) {
+                    this.app.gameplayManager.setCurrentBoard(gameBoard);
                     this.addChild(gameBoard);
                 }
             }

@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { MainView } from './core/managers/MainView';
+import { BaseMainView } from './core/managers/MainView';
 import { BaseGameplay } from './core/managers/Gameplay';
 import { IGameConfig } from './core/utilies/interfaces/configs/gameConfig/IGameConfig';
 import { AssetManager } from './core/managers/AssetManager';
@@ -21,7 +21,7 @@ export class Application {
 
     public managerHub: IManagerHub;
 
-    public mainView: MainView;
+    public mainView: BaseMainView;
     public gameplay: BaseGameplay;
     public playerManager: PlayerManager;
     public assetManager: AssetManager;
@@ -40,6 +40,8 @@ export class Application {
         this.gameConfig = gameConfig;
         this.commonConfig = commonConfig;
         
+        this.managerHub = managerHub;
+
         this.mainView = managerHub.mainView;
         this.gameplay = managerHub.gameplay;
         this.playerManager = managerHub.playerManager;

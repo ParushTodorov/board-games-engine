@@ -19,6 +19,7 @@ export class GameEvents {
 
     public static PLAY_SOUND = "PLAY_SOUND";
     public static PLAY_LOOP = "PLAY_LOOP";
+    public static STOP_SOUND = "STOP_SOUND";
 
     // Messages
     public static NEW_MESSAGE = "NEW_MESSAGE";

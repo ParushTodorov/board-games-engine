@@ -35,6 +35,10 @@
                     {
                         "alias": "gameLogo",
                         "src": "/static/mancala/GameLogo.png"
+                    },
+                    {
+                        "alias": "statusBarLine",
+                        "src": "/static/mancala/StatusBarLine.png"
                     }
                 ]
             }

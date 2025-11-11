@@ -1,3 +1,14 @@
-/*This class will display the elements when the game is paused.
-The class is a base class. If necessary, additional or different 
-implementations will be applied for each game individually.*/
+import * as PIXI from "pixi.js";
+import { BaseView } from "./BaseView";
+import { IPosition } from "../utilies/interfaces/common/IPosition";
+import { getGlobalThis } from "@microsoft/signalr/dist/esm/Utils";
+import gsap from "gsap";
+import { IElementSize } from "../utilies/interfaces/common/IElementSize";
+import { IDimension } from "../utilies/interfaces/common/IDimension";
+
+export class PauseView extends BaseView {
+
+    public init() {
+        
+    }
+}

@@ -1,18 +1,18 @@
 import * as PIXI from "pixi.js";
 import gsap from "gsap";
 
-import { IGameViewElementsConfig } from "../utilies/interfaces/configs/gameConfig/IGameViewElementsConfig";
 import { Application } from "../../Application";
 import { GameEvents } from "../utilies/GameEvents";
 import { GameplayView } from "../views/GameplayView";
 import { EndView } from "../views/EndView";
 import { LoadingView } from "../views/LoadingView";
+import { PauseView } from "../views/PauseView";
 import { BaseView } from "../views/BaseView";
 import { StatusBarView } from "../views/StatusBarView";
 import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementConfig";
 import { IViewsConfig } from "../utilies/interfaces/configs/gameConfig/IViewsConfig";
 
-export class MainView extends PIXI.Container {
+export class BaseMainView extends PIXI.Container {
     protected app: Application;
     protected currentView: BaseView;
     protected statusBar: StatusBarView;
@@ -107,40 +107,63 @@ export class MainView extends PIXI.Container {
     }
 
     protected createCommonUI() {
-        if (this.commonConfig["statusBar"]) {
-            this.statusBar = new StatusBarView(this.commonConfig["statusBar"]);
-            this.statusBar.x = 0;
-            this.statusBar.y = this.app.viewSizes.height;
-            this.statusBar.visible = false;
-            this.addChild(this.statusBar);
-            this.statusBar.zIndex = 1000;
-        }
     }
 
     protected createAllViews() {
-        if (!this.views.has("gameplayView")) {
-            const gameplayView = new GameplayView(this.viewConfig.gameViewElements);
-            gameplayView.init();
-            gameplayView.visible = false;
-            gameplayView.alpha = 0;
-            this.views.set("gameplayView", gameplayView);
-            this.addChild(gameplayView);
-        }
-
-        if (!this.views.has("endView") && this.viewConfig.endViewElements) {
-            const endView = new EndView(this.viewConfig.endViewElements);
-            // endView.init();
-            endView.visible = false;
-            endView.alpha = 0;
-            endView.interactive = true;
-            endView.on('pointerup', () => {
-                this.app.emitter.emit(GameEvents.START_NEW_GAME);        
-            })
-            this.views.set("endView", endView);
-            this.addChild(endView);
-        }
+        this.createGamePlayView();
+        this.createStatusBar();
+        this.createPauseView();
+        this.createEndView();
 
         this.app.emitter.emit(GameEvents.START_NEW_GAME);
+    }
+
+    protected createGamePlayView() {
+        if (this.views.has("gameplayView")) return;
+        
+        const gameplayView = new GameplayView(this.viewConfig.gameViewElements);
+        gameplayView.init();
+        gameplayView.visible = false;
+        gameplayView.alpha = 0;
+        this.views.set("gameplayView", gameplayView);
+        this.addChild(gameplayView);
+    }
+
+    protected createPauseView() {
+        if (this.views.has("pauseView")) return;
+
+        const pauseView = new PauseView();
+        pauseView.init();
+        pauseView.visible = false;
+        pauseView.alpha = 0;
+        this.views.set("pauseView", pauseView);
+        this.addChild(pauseView);
+    }
+
+    protected createEndView() {
+        if (this.views.has("endView") && this.viewConfig.endViewElements) return;
+        
+        const endView = new EndView(this.viewConfig.endViewElements);
+        endView.visible = false;
+        endView.alpha = 0;
+        endView.interactive = true;
+        endView.on('pointerup', () => {
+            this.app.emitter.emit(GameEvents.START_NEW_GAME);        
+        })
+        this.views.set("endView", endView);
+        this.addChild(endView);
+    }
+
+    protected createStatusBar() {
+        if (!this.commonConfig["statusBar"]) return;
+
+        this.statusBar = new StatusBarView(this.commonConfig["statusBar"]);
+        this.statusBar.init();
+        this.statusBar.x = 0;
+        this.statusBar.y = this.app.viewSizes.height;
+        this.statusBar.visible = false;
+        this.addChild(this.statusBar);
+        this.statusBar.zIndex = 1000;
     }
 
     protected async transitionTo(nextViewName: string) {

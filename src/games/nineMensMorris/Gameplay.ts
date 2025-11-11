@@ -101,6 +101,8 @@ export class Gameplay extends BaseGameplay {
         };
 
         super.onStartNewGame();
+
+        this.app.emitter.emit(GameEvents.PLAY_LOOP, "mainMusic", 0.5);
     }
 
     protected async onGorgeTouch(event: any, gorgeName: string) {
@@ -222,6 +224,7 @@ export class Gameplay extends BaseGameplay {
         if (nextPlayerGameComponentsCount < 3 && (this.gamePhase[currnetPlayer] === GamePhases.Flying || this.gamePhase[nextPlayer] === GamePhases.Flying)) {
             this.app.emitter.emit(GameEvents.NEW_MESSAGE, `${currnetPlayer} is a winner!!!`);
             this.app.emitter.emit(GameEvents.GAME_END);
+            this.app.emitter.emit(GameEvents.STOP_SOUND, "mainMusic");
             return;
         }
 

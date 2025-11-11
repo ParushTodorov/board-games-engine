@@ -16,6 +16,10 @@
                     {
                         "alias": "statusBar",
                         "src": "/static/common/StatusBar.png"
+                    },
+                    {
+                        "alias": "menuButton",
+                        "src": "/static/common/MenuButton.png"
                     }
                 ]
             },
@@ -25,7 +29,11 @@
                     {
                         "alias": "movingSound",
                         "src":"/static/sounds/sfx/MovingSound.wav"
-                    }    
+                    },
+                    {
+                        "alias": "mainMusic",
+                        "src":"/static/sounds/song/Music.wav"
+                    }
                 ]
             }
         ]

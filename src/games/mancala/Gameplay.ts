@@ -81,6 +81,8 @@ export class Gameplay extends BaseGameplay {
         this.showCurrentPlayer();
 
         super.onStartNewGame();
+
+        this.app.emitter.emit(GameEvents.PLAY_LOOP, "mainMusic", 0.5);
     }
 
     private async onTouchToMove(event: any, startElementName: string, element: string): Promise<void> {
@@ -233,6 +235,7 @@ export class Gameplay extends BaseGameplay {
 
     private endGame(winner: number) {
         this.app.emitter.emit(GameEvents.NEW_MESSAGE, `Player ${winner} is the winner!`);
+        this.app.emitter.emit(GameEvents.STOP_SOUND, "mainMusic");
         this.app.emitter.emit(GameEvents.GAME_END);
     }
 }

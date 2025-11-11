@@ -27,6 +27,14 @@
                     {
                         "alias": "endViewBackground",
                         "src": "/static/nineMensMorris/EndViewBackground.png"
+                    },
+                    {
+                        "alias": "statusBarLine",
+                        "src": "/static/nineMensMorris/StatusBarLine.png"
+                    }, 
+                    {
+                        "alias": "gameLogo",
+                        "src": "/static/nineMensMorris/GameLogo.png"
                     }
                 ]
             }
@@ -130,18 +138,18 @@
             "gameLogo": {
                 "assetName": "gameLogo",
                 "size": {
-                    "w": 450,
-                    "h": 100
+                    "w": 220,
+                    "h": 88
                 },
                 "globalPositions": {
-                    "x": 700,
-                    "y": 85
+                "x": 484,
+                "y": 520.5
                 }
             },
             "alwaysOnViewBounds": {
                 "x": 90,
                 "y": 100,
-                "width": 788,
+                "width": 878,
                 "height": 937  
             },
             "pivot": {

@@ -3,14 +3,14 @@ import { AudioManager } from "./managers/AudioManager";
 import { DragManager } from "./managers/DragManager";
 import { BaseGameplay } from "./managers/Gameplay";
 import { GameplayElementsManager } from "./managers/GameplayElementsManager";
-import { MainView } from "./managers/MainView";
+import { BaseMainView } from "./managers/MainView";
 import { MessageManager } from "./managers/MessageManager";
 import { PlayerManager } from "./managers/PlayerManager";
 import { IManagerHub } from "./utilies/interfaces/configs/IManagerHub";
 
 export class BaseManagerHub implements IManagerHub {
     public gameplay: BaseGameplay;
-    public mainView: MainView;
+    public mainView: BaseMainView;
     public assetManager: AssetManager;
     public messageManager: MessageManager;
     public playerManager: PlayerManager;
@@ -19,7 +19,7 @@ export class BaseManagerHub implements IManagerHub {
     public dragManager: DragManager;
 
     constructor() {
-        this.mainView = new MainView();
+        this.mainView = new BaseMainView();
         this.gameplay = new BaseGameplay();
         this.assetManager = new AssetManager();
         this.messageManager = new MessageManager();

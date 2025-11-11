@@ -2,8 +2,15 @@ import * as PIXI from "pixi.js";
 
 import { BaseMainViewElement } from "./BaseMainViewElement";
 import { IElementSize } from "../interfaces/common/IElementSize";
+import { IBaseElementConfig } from "../interfaces/configs/IBaseElementConfig";
+import { Application } from "../../../Application";
 
 export class MessageBoard extends BaseMainViewElement {
+    private statusBarConfig: IBaseElementConfig;
+    private statusBarSprite: PIXI.Sprite;
+    private statusBarLine: PIXI.Sprite;
+    private menuButton: PIXI.Sprite;
+
     public BASE_SIZE: IElementSize = {
         w: 600,
         h: 50
@@ -13,9 +20,108 @@ export class MessageBoard extends BaseMainViewElement {
 
     protected text: PIXI.Text;
 
-    constructor() {
+    constructor(config: IBaseElementConfig) {
         super();
 
+        this.statusBarConfig = config;
+
+        this.createBackground();
+        this.createText();
+        this.createStatusBarLine();
+        this.createMenuButton();
+        this.onResize();
+    }
+
+    public setText(message: string) {
+        this.text.text = message;
+
+        this.resize();
+    }
+
+    public getText(): string {
+        return this.text.text;
+    }
+
+    public onResize() {
+        const { width, height } = this.app.viewSizes;
+
+        const scale = width / (this.statusBarSprite.width / this.statusBarSprite.scale.x);
+        this.statusBarSprite.scale.set(scale);
+
+        const orientationHeight = this.app.viewSizes.isLandscape() ? height * 0.1 : height * 0.08;
+        this.statusBarSprite.height = orientationHeight;
+
+        if (this.statusBarLine) {
+            const orientationHeightCoef = this.app.viewSizes.isLandscape() ? height * 0.1 : height * 0.08;
+            this.statusBarLine.width = this.statusBarSprite.width;
+            this.statusBarLine.height = this.statusBarSprite.height * 0.25;
+            this.statusBarLine.x = 0;
+            this.statusBarLine.y = -(this.statusBarSprite.height + this.statusBarLine.height);
+        } 
+        
+        if (this.menuButton) {
+            const offsetCoef = this.app.viewSizes.isLandscape() ? 1.5 : 1.1;
+            const sizeCoef =  this.app.viewSizes.isLandscape() ? 0.8 : 0.6;
+
+            this.menuButton.width = orientationHeight * sizeCoef;
+            this.menuButton.height = orientationHeight * sizeCoef;
+            
+            this.menuButton.x = this.statusBarSprite.width - this.menuButton.width * offsetCoef;
+            this.menuButton.y = - this.statusBarSprite.height * (sizeCoef + (1 - sizeCoef) / 2);
+        }
+
+        this.text.x = this.statusBarSprite.width / 2;
+        this.text.y = - this.statusBarSprite.height / 2;
+
+        this.BASE_SIZE = {w: width * 0.6, h: orientationHeight};
+
+        this.resize();
+    }
+
+    protected createBackground() {
+        this.statusBarSprite = new PIXI.Sprite(Application.APP.assetManager.commonAssets[this.statusBarConfig.assetName]);
+        this.addChild(this.statusBarSprite);
+        
+        this.statusBarSprite.alpha = 0.80;
+        this.statusBarSprite.anchor.set(0, 1);
+    }
+    
+    protected createStatusBarLine() {
+        if (!Application.APP.assetManager.gameplayAssets['statusBarLine']) return;
+
+        this.statusBarLine = new PIXI.Sprite(Application.APP.assetManager.gameplayAssets['statusBarLine']);
+        console.log(this.statusBarLine.width, this.statusBarLine.height);
+        this.addChild(this.statusBarLine);
+    }
+
+    protected createMenuButton() {
+        if (!Application.APP.assetManager.commonAssets['menuButton']) return;
+
+        this.menuButton = new PIXI.Sprite(Application.APP.assetManager.commonAssets['menuButton']);
+        this.menuButton.label = 'menuButton';
+        this.menuButton.interactive = true;
+        this.addChild(this.menuButton);
+
+        let isPressed: boolean = false;
+
+        this.menuButton.on('pointerdown', () => {
+            this.menuButton.x += this.menuButton.width * 0.025;
+            this.menuButton.y += this.menuButton.width * 0.025;
+
+            isPressed = true;
+        })
+
+        document.addEventListener('pointerup', () => {
+            if (isPressed) {
+                this.menuButton.x -= this.menuButton.width * 0.025;
+                this.menuButton.y -= this.menuButton.width * 0.025;
+
+                isPressed = false;
+            }
+        })
+    }
+
+    private createText() {
         this.text = new PIXI.Text();
         this.text.style.fill = 0xffffff;
         this.text.style.fontFamily = "Impact";
@@ -33,23 +139,6 @@ export class MessageBoard extends BaseMainViewElement {
         this.resize();
 
         this.addChild(this.text);
-    }
-
-    public setText(message: string) {
-        this.text.text = message;
-
-        this.resize();
-    }
-
-    public getText(): string {
-        return this.text.text;
-    }
-
-    public onResize(maxSize: IElementSize) {
-        this.BASE_SIZE.w = maxSize.w;
-        this.BASE_SIZE.h = maxSize.h;
-
-        this.resize();
     }
 
     private resize() {

@@ -10,6 +10,8 @@ export class GameplayElementsManager {
     private gorges: Map<string, Gorge> = new Map();
     private gameComponents: Map<string, GameComponent> = new Map();
 
+    private currentBoard: GameBoard;
+
     public setElement(type: GameElementType, name: string, element: any) {
         switch (type) {
             case "board":
@@ -50,6 +52,14 @@ export class GameplayElementsManager {
             default:
                 break;
         }
+    }
+
+    public setCurrentBoard(gameBoard: GameBoard) {
+        this.currentBoard = gameBoard;
+    }
+
+    public getCurrentBoard() {
+        return this.currentBoard;
     }
 
     private getElement<T>(name: string, type: GameElementType, map: Map<string, T>) {

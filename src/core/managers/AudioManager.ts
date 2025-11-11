@@ -9,7 +9,8 @@ export class AudioManager {
         this.app = Application.APP;
 
         this.app.emitter.on(GameEvents.PLAY_SOUND, this.play, this);
-        this.app.emitter.on(GameEvents.PLAY_LOOP, this.play, this);
+        this.app.emitter.on(GameEvents.PLAY_LOOP, this.playLoop, this);
+        this.app.emitter.on(GameEvents.STOP_SOUND, this.stop, this);
     }
 
     public async play(audioName: string, volume: number = 1, loop: boolean = false): Promise<Howl | null> {
@@ -29,6 +30,18 @@ export class AudioManager {
     public async playLoop(audioName: string, volume: number = 1): Promise<Howl | null> {
         try {
             return this.play(audioName, volume, true);
+        } catch (error) {
+            console.warn(error);
+            return null;
+        }
+    }
+
+    public async stop(audioName: string) {
+        try {
+            const audio: Howl = await this.app.assetManager.getAudio(audioName);
+            audio.stop();
+
+            return audio;
         } catch (error) {
             console.warn(error);
             return null;
