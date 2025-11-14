@@ -8,7 +8,22 @@ import { IDimension } from "../utilies/interfaces/common/IDimension";
 
 export class PauseView extends BaseView {
 
+    protected background: PIXI.Graphics;
+
     public init() {
-        
+        const background = new PIXI.Graphics();
+        background.rect(0, 0, this.app.viewSizes.width, this.app.viewSizes.height);
+        background.fill({color: 0x000000, alpha: 0.9})
+
+        this.addChild(background);
+
+        this.background = background;
+    }
+
+    public onResize(): void {
+        const { width, height} = this.app.viewSizes;
+
+        this.background.width = width;
+        this.background.height = height;
     }
 }

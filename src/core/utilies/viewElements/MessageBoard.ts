@@ -4,6 +4,7 @@ import { BaseMainViewElement } from "./BaseMainViewElement";
 import { IElementSize } from "../interfaces/common/IElementSize";
 import { IBaseElementConfig } from "../interfaces/configs/IBaseElementConfig";
 import { Application } from "../../../Application";
+import { GameEvents } from "../GameEvents";
 
 export class MessageBoard extends BaseMainViewElement {
     private statusBarConfig: IBaseElementConfig;
@@ -109,6 +110,10 @@ export class MessageBoard extends BaseMainViewElement {
             this.menuButton.y += this.menuButton.width * 0.025;
 
             isPressed = true;
+        })
+
+        this.menuButton.on('pointerup', () => {
+            this.app.emitter.emit(GameEvents.MENU_BUTTON_PRESS);
         })
 
         document.addEventListener('pointerup', () => {

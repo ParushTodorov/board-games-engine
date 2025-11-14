@@ -55,14 +55,14 @@ export class GameplayView extends BaseView {
         this.background.y = this.gameplayViewConfig.pivot.y - this.background.height / 2;
     }
 
-    private createBackground() {
+    protected createBackground() {
         const backgroundConfig = this.gameplayViewConfig.background;
         this.background = new Background(backgroundConfig);
 
         this.addChild(this.background);
     }
 
-    private createGameLogo() {
+    protected createGameLogo() {
         const gameLogoConfig = this.gameplayViewConfig.gameLogo;
 
         this.gameLogo = new GameLogo(gameLogoConfig);
@@ -74,7 +74,7 @@ export class GameplayView extends BaseView {
     }
 
     
-    private createGameBoard() {
+    protected createGameBoard() {
         this.currentBoardName = this.gameplayViewConfig.gameBoard.startBoardName;
 
         Object.keys(this.gameplayViewConfig.gameBoard.boards).forEach(
@@ -94,7 +94,7 @@ export class GameplayView extends BaseView {
         )
     }
 
-    private createGorges() {
+    protected createGorges() {
         const currentGameBoard = this.app.gameplayManager.getSingleElementByNameAndType(this.currentBoardName, 'board');
 
         Object.keys(this.gameplayViewConfig.gorge).forEach(
@@ -122,7 +122,7 @@ export class GameplayView extends BaseView {
         )
     }
 
-    private createGameComponents() {
+    protected createGameComponents() {
         Object.keys(this.gameplayViewConfig.gameComponents).forEach(
             value => {
                 const config = this.gameplayViewConfig.gameComponents[value];

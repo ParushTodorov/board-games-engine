@@ -5,6 +5,7 @@ import { Application } from "../../Application";
 import { GameEvents } from "../utilies/GameEvents";
 import { GameplayView } from "../views/GameplayView";
 import { EndView } from "../views/EndView";
+import { MenuView } from "../views/MenuView";
 import { LoadingView } from "../views/LoadingView";
 import { PauseView } from "../views/PauseView";
 import { BaseView } from "../views/BaseView";
@@ -23,6 +24,9 @@ export class BaseMainView extends PIXI.Container {
     protected isAnimationPlaying: boolean = false;
     protected interval: NodeJS.Timeout;
 
+    protected isGamePaused: boolean = false;
+    protected isMenuOpen: boolean = false;
+
     constructor() {
         super();   
     }
@@ -40,6 +44,10 @@ export class BaseMainView extends PIXI.Container {
         this.app.emitter.on(GameEvents.LOAD_GAMEPLAY_ASSETS, this.createAllViews, this);
         this.app.emitter.on(GameEvents.START_GAME, this.onStartGame, this);
         this.app.emitter.on(GameEvents.GAME_END, this.onGameEnd, this);
+        this.app.emitter.on(GameEvents.GAME_PAUSE, this.onGamePause, this);
+        this.app.emitter.on(GameEvents.GAME_RESUME, this.onGameResume, this);
+        this.app.emitter.on(GameEvents.OPEN_MENU, this.onMenuOpen, this);
+        this.app.emitter.on(GameEvents.CLOSE_MENU, this.onMenuClose, this);
     }
 
     public getViewByName(name: string) {
@@ -65,6 +73,14 @@ export class BaseMainView extends PIXI.Container {
         this.statusBar.onResize();
         
         this.currentView.onResize();
+
+        if (this.isGamePaused) {
+            this.views.get('pauseView').onResize();
+        }
+
+        if (this.isMenuOpen) {
+            this.views.get('menuView').onResize();
+        }
     }
 
     protected async onLoadGame() {
@@ -94,8 +110,46 @@ export class BaseMainView extends PIXI.Container {
         await this.show(this.statusBar);
     }
 
-    protected onGamePause() {
+    protected async onGamePause() {
+        this.currentView.interactive = false;
+        this.currentView.interactiveChildren = false;
+        this.isGamePaused = true;
 
+        await this.show(this.views.get("pauseView"), 0.2);
+    }
+
+    protected async onGameResume() {
+        await this.hide(this.views.get("pauseView"), 0.2);
+
+        this.isGamePaused = false;
+
+        this.currentView.interactive = true;
+        this.currentView.interactiveChildren = true;
+    }
+
+    protected async onMenuOpen() {
+        await this.onGamePause();
+
+        this.isMenuOpen = true;
+        const menuView = this.views.get("menuView");
+
+        await this.show(menuView, 0.2);
+        
+        menuView.interactive = true;
+        menuView.interactiveChildren = true;
+
+    }
+
+    protected async onMenuClose() {
+        await this.onGameResume();
+
+        const menuView = this.views.get("menuView");
+
+        await this.hide(menuView, 0.2);
+
+        this.isMenuOpen = false;        
+        menuView.interactive = false;
+        menuView.interactiveChildren = false;
     }
 
     protected onGameplay() {
@@ -114,6 +168,7 @@ export class BaseMainView extends PIXI.Container {
         this.createStatusBar();
         this.createPauseView();
         this.createEndView();
+        this.createMenuView();
 
         this.app.emitter.emit(GameEvents.START_NEW_GAME);
     }
@@ -136,6 +191,7 @@ export class BaseMainView extends PIXI.Container {
         pauseView.init();
         pauseView.visible = false;
         pauseView.alpha = 0;
+        pauseView.zIndex = 500;
         this.views.set("pauseView", pauseView);
         this.addChild(pauseView);
     }
@@ -164,6 +220,20 @@ export class BaseMainView extends PIXI.Container {
         this.statusBar.visible = false;
         this.addChild(this.statusBar);
         this.statusBar.zIndex = 1000;
+    }
+
+    protected createMenuView() {
+        if (this.views.has("menuView")) return;
+
+        const menuView = new MenuView();
+        menuView.init();
+        menuView.visible = false;
+        menuView.alpha = 0;
+        menuView.interactive = false;
+        menuView.interactiveChildren = false;
+        menuView.zIndex = 750;
+        this.views.set("menuView", menuView);
+        this.addChild(menuView);
     }
 
     protected async transitionTo(nextViewName: string) {

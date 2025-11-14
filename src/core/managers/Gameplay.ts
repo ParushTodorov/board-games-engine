@@ -14,6 +14,8 @@ export class BaseGameplay {
     protected currentGameState: GameStates;
     protected lastGameState: GameStates;
 
+    protected isMenuOpen: boolean = false;
+
     constructor() {
         this.currentGameState = GameStates.Loading;
         this.lastGameState = GameStates.None;
@@ -23,6 +25,7 @@ export class BaseGameplay {
         this.app = Application.APP;
         this.playerManager = this.app.playerManager;
         Application.APP.emitter.on(GameEvents.START_NEW_GAME, this.onStartNewGame, this);
+        Application.APP.emitter.on(GameEvents.MENU_BUTTON_PRESS, this.onMenuButtonPessed, this);
     }
 
     public changeGameState(gameState: GameStates) {
@@ -43,11 +46,22 @@ export class BaseGameplay {
 
     protected onPauseGame() {
         this.changeGameState(GameStates.Pause);
-        this.app.emitter.emit(GameEvents.GAME_PAUSED);
+        this.app.emitter.emit(GameEvents.GAME_PAUSE);
     }
 
     protected onResumeGame() {
         this.changeGameState(this.lastGameState);
-        this.app.emitter.emit(GameEvents.GAME_RESUMED);
+        this.app.emitter.emit(GameEvents.GAME_RESUME);
+    }
+
+    protected onMenuButtonPessed() {
+        if (this.isMenuOpen) {
+            this.isMenuOpen = false;
+            this.app.emitter.emit(GameEvents.CLOSE_MENU);
+            return;
+        }
+        
+        this.isMenuOpen = true;
+        this.app.emitter.emit(GameEvents.OPEN_MENU);
     }
 }   

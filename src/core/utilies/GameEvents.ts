@@ -7,8 +7,8 @@ export class GameEvents {
 
     public static START_GAME = "START_GAME";
     public static GAME_END = "GAME_END";
-    public static GAME_PAUSED = "GAME_PAUSED";
-    public static GAME_RESUMED = "GAME_RESUMED";
+    public static GAME_PAUSE = "GAME_PAUSE";
+    public static GAME_RESUME = "GAME_RESUME";
 
     public static GAME_COMPONENT_DOWN = "GAME_COMPONENT_DOWN";
     public static GAME_COMPONENT_UP = "GAME_COMPONENT_UP";
@@ -27,4 +27,8 @@ export class GameEvents {
 
     public static SCORE_CHANGE = "SCORE_CHANGE";
     public static PLAYER_CHANGE = "PLAYER_CHANGE"
+
+    public static MENU_BUTTON_PRESS = "MENU_BUTTON_PRESS";
+    public static OPEN_MENU = "OPEN_MENU";
+    public static CLOSE_MENU = "CLOSE_MENU";
 }
