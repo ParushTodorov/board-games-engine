@@ -206,7 +206,7 @@ export class Gameplay extends BaseGameplay {
 
     private finishPlayerTurn() {
         const currnetPlayer = this.playerManager.playerOnTurnId();
-        const nextPlayer = this.playerManager.nextPlaterId();
+        const nextPlayer = this.playerManager.nextPlayerId();
 
         if (this.playerGameComponents[currnetPlayer].length === 0 && this.playerGameComponents[nextPlayer].length === 0 && this.gamePhase[currnetPlayer] === GamePhases.Placing) {
             this.gamePhase[currnetPlayer] = GamePhases.Moving;
@@ -245,7 +245,7 @@ export class Gameplay extends BaseGameplay {
         
         if (!gorge || this.dragManager.getOccupation(gorge.getId()) === this.playerManager.playerOnTurnId()) return false;
 
-        if (this.isMill(gorge.getId(), this.playerManager.nextPlaterId())) return false;
+        if (this.isMill(gorge.getId(), this.playerManager.nextPlayerId())) return false;
 
         gorge.removeAllGameComponents();
         this.dragManager.setOccupation(gorge.getId(), Occupation.Empty);
@@ -292,7 +292,7 @@ export class Gameplay extends BaseGameplay {
     }
 
     private isCapturedPosible() {
-        const nextPlayer = this.playerManager.nextPlaterId();
+        const nextPlayer = this.playerManager.nextPlayerId();
         const currentMills: [number, number, number][]= [];
 
         const occupiedArray: [string, Occupation][] = Object.entries(this.dragManager.getOccupationMap()).filter(o => o[1] === nextPlayer);

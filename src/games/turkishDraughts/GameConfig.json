@@ -1,0 +1,141 @@
+{
+    "gameInfo": {
+        "game": "Turkish Draughts",
+        "gameToken": "td"
+    },
+    "assets": {
+        "bundles": [
+            {
+                "name": "gameplay_view",
+                "assets": [
+                    {
+                        "alias": "gameplayBackground",
+                        "src": "/static/turkishDraughts/Background.png"
+                    },
+                    {
+                        "alias": "mainGameBoard",
+                        "src": "/static/turkishDraughts/GameBoard.png"
+                    },
+                    {
+                        "alias": "playerOne",
+                        "src": "/static/turkishDraughts/GameComponent-white.png"
+                    },
+                    {
+                        "alias": "playerTwo",
+                        "src": "/static/turkishDraughts/GameComponent-black.png"
+                    },
+                    {
+                        "alias": "endViewBackground",
+                        "src": "/static/turkishDraughts/EndViewBackground.png"
+                    }
+                ]
+            }
+        ]        
+    },
+    "views": {
+        "gameViewElements": {
+            "background": {
+                "assetName": "gameplayBackground",
+                "size": {
+                    "w": 1400,
+                    "h": 1400
+                },
+                "globalPositions": {
+                    "x": 0,
+                    "y": -216
+                }
+            },
+            "gameBoard": {
+                "startBoardName": "mainGameBoard",
+                "boards": {
+                    "mainGameBoard": { 
+                        "assetName": "mainGameBoard",
+                        "size": {
+                            "w": 851,
+                            "h": 830
+                        },
+                        "globalPositions": {
+                            "x": 100,
+                            "y": 200
+                        }
+                    }
+                }
+            },
+            "gorge": {
+                "gorge": {
+                    "size": {
+                        "w": 91.5,
+                        "h": 89.5
+                    },
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "count": 64,
+                    "globalPositions": {
+                        "0": {"x": 59, "y": 57}
+                    },
+                    "gameComponentsPosition": {
+                        "0": {"x": 0.5, "y": 0.5}
+                    }
+                }
+            },
+            "gameComponents": {
+                "playerOne": {
+                    "assetName": "playerOne",
+                    "count": 16,
+                    "size": {
+                        "w": 84,
+                        "h": 85
+                    }
+                },
+                "playerTwo": {
+                    "assetName": "playerTwo",
+                    "count": 16,
+                    "size": {
+                        "w": 84,
+                        "h": 85
+                    }
+                }
+            },
+            "gameLogo": {
+                "assetName": "gameLogo",
+                "size": {
+                    "w": 450,
+                    "h": 100
+                },
+                "globalPositions": {
+                    "x": 700,
+                    "y": 85
+                }
+            },
+            "alwaysOnViewBounds": {
+                "x": 90,
+                "y": 100,
+                "width": 871,
+                "height": 1040  
+            },
+            "pivot": {
+                "x": 525.5,
+                "y": 665
+            }
+        },
+        "endViewElements": {
+            "elements": {
+                "background": {
+                    "assetName": "endViewBackground"
+                }
+            },
+            "pivot": {
+                "x": 512,
+                "y": 493
+            },
+            "alwaysOnViewBounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1024,
+                "height": 985  
+            }
+        }
+    }
+}

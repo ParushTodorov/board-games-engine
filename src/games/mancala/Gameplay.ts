@@ -207,7 +207,7 @@ export class Gameplay extends BaseGameplay {
             return false;
         }
 
-        const nextPlayerId = this.playerManager.nextPlaterId()
+        const nextPlayerId = this.playerManager.nextPlayerId()
 
         if (this.playerManager.playerOnTurnId() === this.sideGrorgeToPlayerMap[finalGorgeId] || this.isPlayerMovePossible(nextPlayerId)) {
             return true;

@@ -23,7 +23,7 @@ export class PlayerManager {
         return this.playerOnTurn.id;
     }
 
-    public nextPlaterId() {
+    public nextPlayerId() {
         let nextPlayerId = this.playerOnTurn.id + 1;
 
         if (!Object.keys(this.players).includes(nextPlayerId.toString())) {
