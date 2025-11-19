@@ -7,6 +7,7 @@ import { GameComponent } from "../../core/utilies/viewElements/GameComponent";
 import { Gorge } from "../../core/utilies/viewElements/Gorge";
 import { nextGorgesPlayerOne, nextGorgesPlayerTwo } from "./utilis/BoardRules";
 import { GameComponentZIndex } from "./utilis/ZIndexMap";
+import { CustomGameComponent } from "./customViews/CustomGorgeComponent";
 
 export class Gameplay extends BaseGameplay {
     private playerGameComponents: {[key: number]: GameComponent[]} = {
@@ -17,6 +18,11 @@ export class Gameplay extends BaseGameplay {
     private playerIdToNameMap: {[key: number]: string} = {
         1: "playerOne",
         2: "playerTwo"
+    }
+
+    private playerIdToKingPromoGorges: {[key: number]: number[]} = {
+        1: [0, 1, 2, 3, 4, 5, 6, 7],
+        2: [63, 62, 61, 60, 59, 58, 57, 56]
     }
 
     private currentGameComponentName?: string;
@@ -106,12 +112,12 @@ export class Gameplay extends BaseGameplay {
     }
 
     protected async onDragStart(event: FederatedPointerEvent, startElement: string, element: string) {
-        // KING move must be implemented!!!
-        
+        // MAX DAMAGE LOGIC
+
         if (this.currentGameComponentName && this.currentGameComponentName != element) return;
 
         const gameComponent: GameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(element, "gameComponent") as GameComponent;
-        gameComponent.zIndex = gameComponent.zIndex = GameComponentZIndex.Active;
+        gameComponent.zIndex = GameComponentZIndex.Active;
 
         if (!this.isGameCompomemtOwnedByCurrentPlayerTurn(gameComponent)) return;
 
@@ -119,36 +125,38 @@ export class Gameplay extends BaseGameplay {
     }
 
     protected async onDragEnd(event: FederatedPointerEvent, startElement: string, element: string)  {
-        const gameComponent: GameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(element, 'gameComponent') as GameComponent;
+        const gameComponent: CustomGameComponent = this.gameplayElementsManager.getSingleElementByNameAndType(element, 'gameComponent') as CustomGameComponent;
         let isCaptured: boolean = false;
         let capturedGorgeId: number = -1;
 
-        const canBeOccupied: (startId: number, endId: number) => boolean = (startId, endId) => {
-            const isEmpty = this.dragManager.getOccupation(endId) === Occupation.Empty;
+        const canBeOccupied: (startId: number, endId: number) => boolean = (startId, endId) => {           
+            if (this.dragManager.getOccupation(endId) != Occupation.Empty) return false;
+            
             const changeDirection = endId - startId;
 
             if (Math.abs(changeDirection) === 1 || Math.abs(changeDirection) === 8) {
                 const nextGorge = this.playerManager.playerOnTurnId() === 1 ? 
                 nextGorgesPlayerOne(startId, 1) : nextGorgesPlayerTwo(startId, 1);
                 
-                if (nextGorge.includes(endId) && isEmpty)
+                if (nextGorge.includes(endId))
                     return true;
             }
 
-            capturedGorgeId = startId + changeDirection / 2;
+            const capturedGorgeIds: number[] = [];
+            this.getAllGorgesForCurrentDirection(startId, endId, capturedGorgeIds);
 
-            if (this.dragManager.getOccupation(capturedGorgeId) != this.playerManager.nextPlayerId()) {
-                return false;
-            }
+            if (capturedGorgeIds.length != 1 && !gameComponent.isKing()) return false;
+            capturedGorgeId = capturedGorgeIds.shift()!;
+            console.log(capturedGorgeIds);
 
-            const nextGorge = this.playerManager.playerOnTurnId() === 1 ? 
-                nextGorgesPlayerOne(startId, 2, true) : nextGorgesPlayerTwo(startId, 2, true);
+            const nextGorge = nextGorgesPlayerTwo(startId, capturedGorgeIds.length + 2, true);
             
-            if (!(nextGorge.includes(endId) && isEmpty)) {
-                return false;
+            if (nextGorge.includes(endId) && this.dragManager.getOccupation(capturedGorgeId) === this.playerManager.nextPlayerId()) {
+                isCaptured = true;
             }
 
-            isCaptured = true;
+            if (gameComponent.isKing() && capturedGorgeIds.filter(c => this.dragManager.getOccupation(c) != Occupation.Empty).length != 0) return false;
+            
             return true;
         }
 
@@ -156,16 +164,23 @@ export class Gameplay extends BaseGameplay {
 
         if (!await this.dragManager.stopDragging(gameComponent)) return;
 
+        const gorgeOwnerId = gameComponent.getGorgeOwner()?.getId()!
+
         if (isCaptured) {
             this.currentGameComponentName = gameComponent.getName();
 
             await this.captureGameComponent(capturedGorgeId);
 
-            if (this.isCapurePosibleNextToGameComponent(gameComponent.getGorgeOwner()?.getId()!)) return;
+            if (this.isCapurePosible(gorgeOwnerId, gameComponent.isKing())) return;
         };
 
-        gameComponent.zIndex = gameComponent.zIndex = GameComponentZIndex.NotActive;
+        gameComponent.zIndex = GameComponentZIndex.NotActive;
         this.currentGameComponentName = undefined;
+
+        if (this.isKingPromotion(gorgeOwnerId)) {
+            gameComponent.activateCrown();
+        }
+
         this.finishPlayerTurn();
     }
 
@@ -184,12 +199,28 @@ export class Gameplay extends BaseGameplay {
             await capturedGameComponent.move({x: 0, y: 0}, () => {capturedGameComponent.visible = false});
     }
 
-    private isCapurePosibleNextToGameComponent(ownerId: number) {
-        const nextGorges = nextGorgesPlayerOne(ownerId, 1, true);
-        const twoStepsNextGorges = nextGorgesPlayerOne(ownerId, 2, true);
+    private isCapurePosible(gorgeOwnerId: number, isKing: boolean): boolean {
+        if (!isKing) {
+            return this.isCapurePosibleNextToGameComponent(gorgeOwnerId);
+        }
+        
+        let index = 1;
+
+        while (index <= 8) {
+            if (this.isCapurePosibleNextToGameComponent(gorgeOwnerId, index, true)) return true;
+
+            index++;
+        }
+
+        return false;
+    }
+
+    private isCapurePosibleNextToGameComponent(ownerId: number, index: number = 1, isKing: boolean = false) {
+        const nextGorges = nextGorgesPlayerOne(ownerId, index, true);
+        const twoStepsNextGorges = nextGorgesPlayerOne(ownerId, index + 1, true);
         let isCapurePosible: boolean = false;
         
-        console.log(JSON.stringify(nextGorges));
+        console.log("ownerId: ", ownerId, " all: ", JSON.stringify(nextGorges));
 
         nextGorges.forEach(gorgeId => {
             const isNextEnemy = this.dragManager.getOccupation(gorgeId) === this.playerManager.nextPlayerId();
@@ -214,6 +245,10 @@ export class Gameplay extends BaseGameplay {
         return gameComponent.getName().includes(currentPlayerName);
     }
 
+    private isKingPromotion(gorgeId: number) {
+        return this.playerIdToKingPromoGorges[this.playerManager.playerOnTurnId()].includes(gorgeId);
+    }
+
     private finishPlayerTurn() {
         this.changePlayerTurn(); 
     }
@@ -225,5 +260,23 @@ export class Gameplay extends BaseGameplay {
     private changePlayerTurn(): void {
         this.playerManager.turnEnd();
         this.showCurrentPlayer();
+    }
+    private getAllGorgesForCurrentDirection(startId: number, endId: number, gorgeIds: number[]) {        
+        const changeDirection = endId - startId;
+    
+        let coefDelta: number
+        if (Math.abs(changeDirection) < 7) {
+            coefDelta = changeDirection < 0 ? changeDirection + 1 : changeDirection - 1;
+        } else {
+            coefDelta = changeDirection < 0 ? changeDirection + 8 : changeDirection - 8;
+        }
+
+        if (coefDelta === 0) return;
+
+        const capturedGorgeId = startId + coefDelta;
+
+        gorgeIds.push(capturedGorgeId);
+
+        this.getAllGorgesForCurrentDirection(startId, capturedGorgeId, gorgeIds);
     }
 }

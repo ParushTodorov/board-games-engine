@@ -27,6 +27,10 @@
                     {
                         "alias": "endViewBackground",
                         "src": "/static/turkishDraughts/EndViewBackground.png"
+                    },
+                    {
+                        "alias": "crown",
+                        "src": "/static/turkishDraughts/Crown.png"
                     }
                 ]
             }
