@@ -14,15 +14,15 @@ import { IBaseElementConfig } from "../utilies/interfaces/configs/IBaseElementCo
 import { IViewsConfig } from "../utilies/interfaces/configs/gameConfig/IViewsConfig";
 
 export class BaseMainView extends PIXI.Container {
-    protected app: Application;
-    protected currentView: BaseView;
-    protected statusBar: StatusBarView;
+    protected app!: Application;
+    protected currentView!: BaseView;
+    protected statusBar!: StatusBarView;
     protected views: Map<string, BaseView> = new Map();
-    protected viewConfig: IViewsConfig;
-    protected commonConfig: {[key: string]: IBaseElementConfig};
+    protected viewConfig!: IViewsConfig;
+    protected commonConfig!: {[key: string]: IBaseElementConfig};
 
     protected isAnimationPlaying: boolean = false;
-    protected interval: NodeJS.Timeout;
+    protected interval!: NodeJS.Timeout;
 
     protected isGamePaused: boolean = false;
     protected isMenuOpen: boolean = false;
@@ -75,11 +75,11 @@ export class BaseMainView extends PIXI.Container {
         this.currentView.onResize();
 
         if (this.isGamePaused) {
-            this.views.get('pauseView').onResize();
+            this.views.get('pauseView')!.onResize();
         }
 
         if (this.isMenuOpen) {
-            this.views.get('menuView').onResize();
+            this.views.get('menuView')!.onResize();
         }
     }
 
@@ -115,11 +115,11 @@ export class BaseMainView extends PIXI.Container {
         this.currentView.interactiveChildren = false;
         this.isGamePaused = true;
 
-        await this.show(this.views.get("pauseView"), 0.2);
+        await this.show(this.views.get("pauseView")!, 0.2);
     }
 
     protected async onGameResume() {
-        await this.hide(this.views.get("pauseView"), 0.2);
+        await this.hide(this.views.get("pauseView")!, 0.2);
 
         this.isGamePaused = false;
 
@@ -131,7 +131,7 @@ export class BaseMainView extends PIXI.Container {
         await this.onGamePause();
 
         this.isMenuOpen = true;
-        const menuView = this.views.get("menuView");
+        const menuView = this.views.get("menuView")!;
 
         await this.show(menuView, 0.2);
         
@@ -143,7 +143,7 @@ export class BaseMainView extends PIXI.Container {
     protected async onMenuClose() {
         await this.onGameResume();
 
-        const menuView = this.views.get("menuView");
+        const menuView = this.views.get("menuView")!;
 
         await this.hide(menuView, 0.2);
 
@@ -199,7 +199,7 @@ export class BaseMainView extends PIXI.Container {
     protected createEndView() {
         if (this.views.has("endView") && this.viewConfig.endViewElements) return;
         
-        const endView = new EndView(this.viewConfig.endViewElements);
+        const endView = new EndView(this.viewConfig.endViewElements!);
         endView.visible = false;
         endView.alpha = 0;
         endView.interactive = true;
@@ -239,7 +239,7 @@ export class BaseMainView extends PIXI.Container {
     protected async transitionTo(nextViewName: string) {
         await this.hide(this.currentView);
 
-        this.currentView = this.getViewByName(nextViewName);
+        this.currentView = this.getViewByName(nextViewName)!;
         await this.show(this.currentView, 1);
     }
 
@@ -258,7 +258,7 @@ export class BaseMainView extends PIXI.Container {
         await gsap.to(currentView, {
             alpha: 0,
             duration,
-            onComplete: () => currentView.visible = false
+            onComplete: () => { currentView.visible = false }
         })
     }
 }

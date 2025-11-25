@@ -15,9 +15,9 @@ export class DragManager {
 
     public canBeOccupied: (startId: number, endId: number) => boolean = (startId: number, endId: number) => true;
 
-    protected app: Application;
-    protected gameplayElementsManager: GameplayElementsManager;
-    protected playerManager: PlayerManager;
+    protected app!: Application;
+    protected gameplayElementsManager!: GameplayElementsManager;
+    protected playerManager!: PlayerManager;
 
     protected occupationMap: {[key: number]: Occupation} = {};
     protected gorgeDimensionMap: {[key: string]: IDimension} = {};

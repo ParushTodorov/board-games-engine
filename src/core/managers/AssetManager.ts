@@ -47,7 +47,7 @@ export class AssetManager {
         });
     }
 
-    public async getAudio(audioName: string | undefined): Promise<Howl> {
+    public async getAudio(audioName: string): Promise<Howl> {
         if (this.audioMap[audioName]) {
             return this.audioMap[audioName];
         }

@@ -8,7 +8,7 @@ import { IDimension } from "../utilies/interfaces/common/IDimension";
 
 export class PauseView extends BaseView {
 
-    protected background: PIXI.Graphics;
+    protected background!: PIXI.Graphics;
 
     public init() {
         const background = new PIXI.Graphics();

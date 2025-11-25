@@ -127,7 +127,8 @@
         "endViewElements": {
             "elements": {
                 "background": {
-                    "assetName": "endViewBackground"
+                    "assetName": "endViewBackground",
+                    "globalPositions": {"x": 0, "y": 0}
                 }
             },
             "pivot": {

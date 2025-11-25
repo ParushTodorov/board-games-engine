@@ -10,7 +10,7 @@ export class GameplayElementsManager {
     private gorges: Map<string, Gorge> = new Map();
     private gameComponents: Map<string, GameComponent> = new Map();
 
-    private currentBoard: GameBoard;
+    private currentBoard!: GameBoard;
 
     public setElement(type: GameElementType, name: string, element: any) {
         switch (type) {

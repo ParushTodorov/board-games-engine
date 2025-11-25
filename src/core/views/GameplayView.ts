@@ -15,10 +15,10 @@ export class GameplayView extends BaseView {
 
     protected gameplayViewConfig: IGameViewElementsConfig;
     
-    protected background: Background;
-    protected gameLogo: GameLogo;
+    protected background!: Background;
+    protected gameLogo!: GameLogo;
 
-    protected currentBoardName: string;
+    protected currentBoardName!: string;
 
     constructor(gameplayViewConfig: IGameViewElementsConfig) {
         super();
@@ -95,7 +95,7 @@ export class GameplayView extends BaseView {
     }
 
     protected createGorges() {
-        const currentGameBoard = this.app.gameplayManager.getSingleElementByNameAndType(this.currentBoardName, 'board');
+        const currentGameBoard = this.app.gameplayManager.getSingleElementByNameAndType(this.currentBoardName, 'board')!;
 
         Object.keys(this.gameplayViewConfig.gorge).forEach(
             value => {

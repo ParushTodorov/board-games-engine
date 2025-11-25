@@ -6,10 +6,10 @@ import { GameplayElementsManager } from "./GameplayElementsManager";
 import { DragManager } from "./DragManager";
 export class BaseGameplay {
 
-    protected app: Application;
-    protected playerManager: PlayerManager;
-    protected gameplayElementsManager: GameplayElementsManager;
-    protected dragManager: DragManager;
+    protected app!: Application;
+    protected playerManager!: PlayerManager;
+    protected gameplayElementsManager!: GameplayElementsManager;
+    protected dragManager!: DragManager;
 
     protected currentGameState: GameStates;
     protected lastGameState: GameStates;

@@ -7,7 +7,7 @@ import { BaseView } from "./BaseView";
 export class EndView extends BaseView {
 
     private config: IViewConfig
-    private background: Background;
+    private background!: Background;
 
     constructor(config: IViewConfig) {
         super();

@@ -81,8 +81,8 @@ export class Gorge extends BaseGameElement {
     }
 
     private getElementGameComponentPosition(id: number) {
-            const x = (this.gameComponentsPosition[id].x + 0.75) * this.width / 2;
-            const y = (this.gameComponentsPosition[id].y + 0.75)  * this.height / 2;
+            const x = (this.gameComponentsPosition![id]!.x + 0.75) * this.width / 2;
+            const y = (this.gameComponentsPosition![id].y + 0.75)  * this.height / 2;
             const position: PIXI.Point = new PIXI.Point(this.position.x + x, this.position.y + y)
 
             return position;

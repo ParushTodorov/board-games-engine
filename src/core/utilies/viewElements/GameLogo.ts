@@ -13,7 +13,7 @@ export class GameLogo extends BaseMainViewElement {
         this.gameLogoConfig = gameLogoConfig;
 
         this.sprite = new PIXI.Sprite(this.app.assetManager.gameplayAssets[this.gameLogoConfig.assetName]);
-        const scale = Math.min(gameLogoConfig.size.w / this.sprite.width, gameLogoConfig.size.h / this.sprite.height);
+        const scale = Math.min(gameLogoConfig.size!.w / this.sprite.width, gameLogoConfig.size!.h / this.sprite.height);
 
         this.sprite.scale.set(scale);
 

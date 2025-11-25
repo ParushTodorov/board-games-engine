@@ -4,11 +4,11 @@ import { MessageBoard } from "../utilies/viewElements/MessageBoard";
 
 export class MessageManager {
 
-    protected messageBoard: MessageBoard;
-    protected app: Application;
+    protected messageBoard!: MessageBoard;
+    protected app!: Application;
 
-    protected currentPlayerInfo: string;
-    protected timeoutChange: NodeJS.Timeout;
+    protected currentPlayerInfo!: string;
+    protected timeoutChange?: NodeJS.Timeout;
     protected baseDelayInMs: number = 1000;
 
     constructor() {

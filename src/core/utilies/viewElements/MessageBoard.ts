@@ -8,9 +8,9 @@ import { GameEvents } from "../GameEvents";
 
 export class MessageBoard extends BaseMainViewElement {
     private statusBarConfig: IBaseElementConfig;
-    private statusBarSprite: PIXI.Sprite;
-    private statusBarLine: PIXI.Sprite;
-    private menuButton: PIXI.Sprite;
+    private statusBarSprite!: PIXI.Sprite;
+    private statusBarLine!: PIXI.Sprite;
+    private menuButton!: PIXI.Sprite;
 
     public BASE_SIZE: IElementSize = {
         w: 600,
@@ -19,7 +19,7 @@ export class MessageBoard extends BaseMainViewElement {
 
     private demo_message = "START GAME";
 
-    protected text: PIXI.Text;
+    protected text!: PIXI.Text;
 
     constructor(config: IBaseElementConfig) {
         super();

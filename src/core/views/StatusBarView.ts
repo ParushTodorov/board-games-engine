@@ -5,8 +5,8 @@ import { MessageBoard } from "../utilies/viewElements/MessageBoard";
 import { MessageManager } from "../managers/MessageManager";
 
 export class StatusBarView extends BaseMainViewElement {
-    protected messageBoard: MessageBoard;
-    protected messageManager: MessageManager;
+    protected messageBoard!: MessageBoard;
+    protected messageManager!: MessageManager;
     protected statusBarConfig: IBaseElementConfig;
 
     constructor(statusBarConfig: IBaseElementConfig) {

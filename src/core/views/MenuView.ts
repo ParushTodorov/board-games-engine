@@ -3,7 +3,7 @@ import { BaseView } from "./BaseView";
 
 export class MenuView extends BaseView {
 
-    private text: PIXI.Text;
+    private text!: PIXI.Text;
 
     public init() {
         const { width, height, isLandscape} = this.app.viewSizes;

@@ -10,7 +10,7 @@ import { Gorge } from "./Gorge";
 
 export class GameComponent extends BaseGameElement implements IMoveable{
     
-    private _gorgeOwner: Gorge;
+    private _gorgeOwner?: Gorge;
 
     private _isDragging: boolean = false;
 
@@ -23,13 +23,13 @@ export class GameComponent extends BaseGameElement implements IMoveable{
         this.on(
             'pointerdown', (e) => {
                 e.stopPropagation();
-                this.app.emitter.emit(GameEvents.GAME_COMPONENT_DOWN, e, this.getGorgeOwner().getName(), this.getName())
+                this.app.emitter.emit(GameEvents.GAME_COMPONENT_DOWN, e, this.getGorgeOwner()!.getName(), this.getName())
             }
         );
         this.on(
             'pointerup', (e) => {
                 e.stopPropagation();
-                this.app.emitter.emit(GameEvents.GAME_COMPONENT_UP, e, this.getGorgeOwner().getName(), this.getName())
+                this.app.emitter.emit(GameEvents.GAME_COMPONENT_UP, e, this.getGorgeOwner()!.getName(), this.getName())
             }
         )
     }
@@ -47,7 +47,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
     }
 
     public async moveFromGlobalPosition(position: PIXI.Point) {
-        const endPosition = this.parent.toLocal(position);
+        const endPosition = this.parent!.toLocal(position);
         endPosition.x -= this.width / 2;
         endPosition.y -= this.height / 2;
 
@@ -75,7 +75,7 @@ export class GameComponent extends BaseGameElement implements IMoveable{
     }
 
     private createGameCopmonentView() {
-        const sprite = new PIXI.Sprite(this.app.assetManager.gameplayAssets[this.elementConfig.assetName]);
+        const sprite = new PIXI.Sprite(this.app.assetManager.gameplayAssets[this.elementConfig.assetName!]);
 
         const scale = Math.min(this.elementConfig.size.w / sprite.width, this.elementConfig.size.h / sprite.height);
         sprite.scale.set(scale);

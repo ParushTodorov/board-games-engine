@@ -3,7 +3,7 @@ import { GameEvents } from "../utilies/GameEvents";
 import { Howl } from "howler";
 
 export class AudioManager {
-    private app: Application;
+    private app!: Application;
 
     public init() {
         this.app = Application.APP;

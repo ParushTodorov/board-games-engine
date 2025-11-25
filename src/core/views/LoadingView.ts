@@ -6,8 +6,8 @@ import { IPosition } from "../utilies/interfaces/common/IPosition";
 import { IDimension } from "../utilies/interfaces/common/IDimension";
 
 export class LoadingView extends BaseView {
-    protected background: PIXI.Graphics;
-    protected logoContainer: PIXI.Container;
+    protected background!: PIXI.Graphics;
+    protected logoContainer!: PIXI.Container;
     protected startPositions: {[key: number]: {[key: string]: number}} = {
         0: {x: 0, y: 0},
         1: {x: -2000, y: 0},
@@ -17,7 +17,7 @@ export class LoadingView extends BaseView {
         5: {y: 2000, x: 0}
     }
 
-    protected baseLogoSize: IDimension;
+    protected baseLogoSize!: IDimension;
 
     constructor() {
         super();

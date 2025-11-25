@@ -11,7 +11,7 @@ export class Background extends BaseMainViewElement {
     }
     
     private backgroundConfig: IBackgroundConfig;
-    private backgroundSprite: PIXI.Sprite;
+    private backgroundSprite!: PIXI.Sprite;
 
     constructor(backgroundConfig: IBackgroundConfig) {
         super();
